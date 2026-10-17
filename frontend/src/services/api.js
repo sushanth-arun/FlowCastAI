@@ -13,7 +13,10 @@ import {
   calculateOptimization
 } from './mockData';
 
-export const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+export const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL || 
+  (typeof window !== 'undefined' && window.location.port !== '5173' && window.location.origin.startsWith('http') 
+    ? window.location.origin 
+    : 'http://localhost:8000');
 
 let isBackendLiveCached = null;
 

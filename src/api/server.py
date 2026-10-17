@@ -19,7 +19,8 @@ try:
 except ImportError:
     ort = None
 from fastapi import FastAPI, HTTPException, status
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from src.models.inference_engine import UniversalInferenceSession
@@ -47,6 +48,7 @@ if not MODEL1_HEALTH_ONNX.exists() and ONNX_MODEL_PATH.exists():
 MODEL2_DELAYS_ONNX = ARTIFACTS_DIR / "model2_delays.onnx"
 MODEL3_STOCK_ONNX = ARTIFACTS_DIR / "model3_stock.onnx"
 XGB_STOCK_PATH = ARTIFACTS_DIR / "model_xgb_stock.joblib"
+FRONTEND_DIST = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
 
 
 # -------------------------------------------------------------
@@ -205,13 +207,43 @@ class ModelManager:
 
 
 # -------------------------------------------------------------
-# Endpoints
+# Static Assets & Endpoints
 # -------------------------------------------------------------
 
-@app.get("/", response_class=HTMLResponse, summary="FlowCast AI Interactive Decision Support Dashboard")
+if FRONTEND_DIST.exists() and (FRONTEND_DIST / "assets").exists():
+    app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIST / "assets")), name="assets")
+
+
+@app.get("/", response_class=HTMLResponse, summary="FlowCast AI Modern React Dashboard")
 def serve_dashboard():
-    """Serve the interactive web control center for FlowCast AI."""
+    """Serve the modern React frontend application for FlowCast AI."""
+    index_file = FRONTEND_DIST / "index.html"
+    if index_file.exists():
+        with open(index_file, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read(), status_code=200)
     return HTMLResponse(content=DASHBOARD_HTML, status_code=200)
+
+
+@app.get("/legacy", response_class=HTMLResponse, summary="FlowCast AI Prototype Dashboard")
+def serve_legacy_dashboard():
+    """Fallback interactive prototype dashboard."""
+    return HTMLResponse(content=DASHBOARD_HTML, status_code=200)
+
+
+@app.get("/favicon.svg", include_in_schema=False)
+def serve_favicon():
+    fav = FRONTEND_DIST / "favicon.svg"
+    if fav.exists():
+        return FileResponse(str(fav))
+    return HTMLResponse(content="", status_code=404)
+
+
+@app.get("/icons.svg", include_in_schema=False)
+def serve_icons():
+    ico = FRONTEND_DIST / "icons.svg"
+    if ico.exists():
+        return FileResponse(str(ico))
+    return HTMLResponse(content="", status_code=404)
 
 
 @app.get("/healthz", summary="System Health Status")

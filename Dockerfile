@@ -33,7 +33,8 @@ RUN pip3 install --break-system-packages --no-cache-dir --no-deps sklearn-pandas
 # Set working directory
 WORKDIR /app
 
-# Copy serialized model artifacts, datasets, and source code
+# Copy frontend production build, serialized model artifacts, datasets, and source code
+COPY frontend/dist/ ./frontend/dist/
 COPY artifacts/ ./artifacts/
 COPY data/ ./data/
 COPY src/ ./src/
