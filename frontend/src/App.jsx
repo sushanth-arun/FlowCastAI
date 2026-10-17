@@ -62,7 +62,10 @@ export default function App() {
   const handleRunSimulation = async (params) => {
     setIsSimulating(true);
     try {
-      const result = await runScenarioSimulation(params);
+      const [result] = await Promise.all([
+        runScenarioSimulation(params),
+        new Promise((resolve) => setTimeout(resolve, 280))
+      ]);
       setOptimizationResult(result);
     } catch (err) {
       console.error('Simulation error:', err);

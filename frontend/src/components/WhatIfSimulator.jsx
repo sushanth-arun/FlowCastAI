@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Sliders, RefreshCw, Zap, TrendingUp, AlertOctagon } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Sliders, RefreshCw, Zap, AlertCircle } from 'lucide-react';
 
 export default function WhatIfSimulator({
   currentParams,
@@ -13,6 +13,18 @@ export default function WhatIfSimulator({
     whBTransferUnitCost: currentParams?.whBTransferUnitCost || 8,
     shortagePenaltyPerUnit: currentParams?.shortagePenaltyPerUnit || 100
   });
+
+  // Keep local params in sync if external scenario changes
+  useEffect(() => {
+    if (currentParams) {
+      setParams({
+        delayDays: currentParams.delayDays ?? 4.0,
+        dailyDemand: currentParams.dailyDemand ?? 10,
+        whBTransferUnitCost: currentParams.whBTransferUnitCost ?? 8,
+        shortagePenaltyPerUnit: currentParams.shortagePenaltyPerUnit ?? 100
+      });
+    }
+  }, [currentParams]);
 
   const handleChange = (field, value) => {
     setParams((prev) => ({
@@ -33,12 +45,20 @@ export default function WhatIfSimulator({
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     onRunSimulation(params);
   };
 
   const rec = optimizationResult?.recommendedOption;
   const baselineCost = optimizationResult?.baselineTotalCost || 4000;
+
+  // Check if current slider values differ from evaluated simulation
+  const hasPendingChanges =
+    currentParams &&
+    (params.delayDays !== currentParams.delayDays ||
+      params.dailyDemand !== currentParams.dailyDemand ||
+      params.whBTransferUnitCost !== currentParams.whBTransferUnitCost ||
+      params.shortagePenaltyPerUnit !== currentParams.shortagePenaltyPerUnit);
 
   return (
     <div className="simulator-card">
@@ -49,25 +69,35 @@ export default function WhatIfSimulator({
             Interactive "What-If" Disruption Stress Simulator
           </div>
           <div className="card-subheading">
-            Dynamically adjust operational variables to stress-test supply chain resilience and re-optimize decisions in real-time
+            Adjust operational variables below, then click "Run Simulation" to recalculate the optimal recovery strategy
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {hasPendingChanges && (
+            <span style={{ fontSize: '0.74rem', color: '#D97706', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+              <AlertCircle size={13} />
+              Unapplied changes
+            </span>
+          )}
+
           <button
             type="button"
             className="btn-secondary"
             onClick={handleReset}
+            disabled={isSimulating}
             title="Reset to default baseline scenario"
           >
             <RefreshCw size={14} />
             Reset Defaults
           </button>
+
           <button
             type="button"
             className="btn-primary"
             onClick={handleSubmit}
             disabled={isSimulating}
+            style={hasPendingChanges ? { boxShadow: '0 0 14px rgba(59, 111, 245, 0.45)' } : {}}
           >
             <Zap size={14} />
             {isSimulating ? 'Computing Optimal...' : 'Run Simulation'}
@@ -89,10 +119,7 @@ export default function WhatIfSimulator({
               max="10"
               step="0.5"
               value={params.delayDays}
-              onChange={(e) => {
-                handleChange('delayDays', e.target.value);
-                onRunSimulation({ ...params, delayDays: Number(e.target.value) });
-              }}
+              onChange={(e) => handleChange('delayDays', e.target.value)}
               className="slider-input"
             />
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', color: '#94A3B8' }}>
@@ -113,10 +140,7 @@ export default function WhatIfSimulator({
               max="25"
               step="1"
               value={params.dailyDemand}
-              onChange={(e) => {
-                handleChange('dailyDemand', e.target.value);
-                onRunSimulation({ ...params, dailyDemand: Number(e.target.value) });
-              }}
+              onChange={(e) => handleChange('dailyDemand', e.target.value)}
               className="slider-input"
             />
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', color: '#94A3B8' }}>
@@ -137,10 +161,7 @@ export default function WhatIfSimulator({
               max="25"
               step="1"
               value={params.whBTransferUnitCost}
-              onChange={(e) => {
-                handleChange('whBTransferUnitCost', e.target.value);
-                onRunSimulation({ ...params, whBTransferUnitCost: Number(e.target.value) });
-              }}
+              onChange={(e) => handleChange('whBTransferUnitCost', e.target.value)}
               className="slider-input"
             />
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', color: '#94A3B8' }}>
@@ -161,10 +182,7 @@ export default function WhatIfSimulator({
               max="250"
               step="10"
               value={params.shortagePenaltyPerUnit}
-              onChange={(e) => {
-                handleChange('shortagePenaltyPerUnit', e.target.value);
-                onRunSimulation({ ...params, shortagePenaltyPerUnit: Number(e.target.value) });
-              }}
+              onChange={(e) => handleChange('shortagePenaltyPerUnit', e.target.value)}
               className="slider-input"
             />
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', color: '#94A3B8' }}>
