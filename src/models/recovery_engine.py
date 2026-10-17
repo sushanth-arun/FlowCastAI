@@ -167,7 +167,7 @@ class FlowCastNetworkEngine:
                     ProductInventory(p_bearings[0], p_bearings[1], p_bearings[2], current_stock=650, expected_demand=300, min_safety_stock=200, incoming_replenishment=150, shipment_delayed=False),
                 ],
                 inbound_shipments=[
-                    InboundShipment("SHP-HYD-01", "WH-C", "Shamshabad Cargo Terminal", p_sensors[0], p_sensors[1], 100, "Tomorrow, 08:00", 0.14, "LOW", False),
+                    InboundShipment("SHP-HYD-01", "WH-C", "Shamshabad Cargo Terminal", p_sensors[0], p_sensors[1], 100, "Tomorrow, 14:00 (+1.5 Days)", 0.58, "MODERATE", False),
                 ]
             )
             return [wh_a, wh_b, wh_c]

@@ -27,6 +27,11 @@ export default function ShipmentTable({ shipments, selectedShipmentId, onSelectS
     return matchesFilter && matchesSearch;
   });
 
+  // Calculate dynamic counts based on actual incoming shipments
+  const highCount = shipments.filter(s => s.riskLevel?.toUpperCase() === 'HIGH').length;
+  const mediumCount = shipments.filter(s => s.riskLevel?.toUpperCase() === 'MEDIUM').length;
+  const lowCount = shipments.filter(s => s.riskLevel?.toUpperCase() === 'LOW').length;
+
   return (
     <div className="card-container" style={{ marginTop: '28px' }}>
       <div className="table-controls-bar">
@@ -49,19 +54,19 @@ export default function ShipmentTable({ shipments, selectedShipmentId, onSelectS
             className={`filter-pill ${riskFilter === 'HIGH' ? 'active' : ''}`}
             onClick={() => setRiskFilter('HIGH')}
           >
-            High Risk (2)
+            High Risk ({highCount})
           </button>
           <button
             className={`filter-pill ${riskFilter === 'MEDIUM' ? 'active' : ''}`}
             onClick={() => setRiskFilter('MEDIUM')}
           >
-            Medium (1)
+            Medium ({mediumCount})
           </button>
           <button
             className={`filter-pill ${riskFilter === 'LOW' ? 'active' : ''}`}
             onClick={() => setRiskFilter('LOW')}
           >
-            Low Risk (2)
+            Low Risk ({lowCount})
           </button>
         </div>
       </div>

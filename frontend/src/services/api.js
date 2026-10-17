@@ -89,10 +89,10 @@ export async function getShipments() {
               origin: shp.origin_hub,
               quantity: shp.quantity,
               scheduledArrival: shp.expected_arrival,
-              predictedDelayDays: shp.is_delayed ? 3.0 : 0.4,
+              predictedDelayDays: shp.is_delayed ? 3.0 : shp.delay_severity === 'MODERATE' ? 1.5 : 0.4,
               delayProbability: shp.delay_risk_score,
-              riskLevel: shp.delay_severity === 'HIGH' ? 'High' : shp.delay_severity === 'MODERATE' ? 'Medium' : 'Low',
-              status: shp.is_delayed ? 'Delayed (Port Congestion)' : 'On Schedule',
+              riskLevel: shp.delay_severity === 'HIGH' ? 'High' : (shp.delay_severity === 'MODERATE' || shp.delay_risk_score >= 0.4) ? 'Medium' : 'Low',
+              status: shp.is_delayed ? 'Delayed (Port Congestion)' : shp.delay_severity === 'MODERATE' ? 'Inspection Hold (+1.5d)' : 'On Schedule',
               isFocalScenario: shp.is_delayed,
               transportMode: 'Intermodal Freight'
             });
