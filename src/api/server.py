@@ -141,24 +141,29 @@ class ModelManager:
         self._init_models()
 
     def _init_models(self):
+        # Session options optimized for high-throughput enterprise execution
+        opts = ort.SessionOptions()
+        opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+        opts.intra_op_num_threads = 4
+
         # 1. Module 1: Asset Health
         if MAPPER_PATH.exists():
             self.mappers["health"] = joblib.load(MAPPER_PATH)
         health_model = MODEL1_HEALTH_ONNX if MODEL1_HEALTH_ONNX.exists() else ONNX_MODEL_PATH
         if health_model.exists():
-            self.sessions["health"] = ort.InferenceSession(str(health_model), providers=["CPUExecutionProvider"])
+            self.sessions["health"] = ort.InferenceSession(str(health_model), opts, providers=["CPUExecutionProvider"])
 
         # 2. Module 2: Logistics Delays
         if MAPPER_DELAYS_PATH.exists():
             self.mappers["delays"] = joblib.load(MAPPER_DELAYS_PATH)
         if MODEL2_DELAYS_ONNX.exists():
-            self.sessions["delays"] = ort.InferenceSession(str(MODEL2_DELAYS_ONNX), providers=["CPUExecutionProvider"])
+            self.sessions["delays"] = ort.InferenceSession(str(MODEL2_DELAYS_ONNX), opts, providers=["CPUExecutionProvider"])
 
         # 3. Module 3: Stockout & Demand
         if MAPPER_STOCK_PATH.exists():
             self.mappers["stock"] = joblib.load(MAPPER_STOCK_PATH)
         if MODEL3_STOCK_ONNX.exists():
-            self.sessions["stock"] = ort.InferenceSession(str(MODEL3_STOCK_ONNX), providers=["CPUExecutionProvider"])
+            self.sessions["stock"] = ort.InferenceSession(str(MODEL3_STOCK_ONNX), opts, providers=["CPUExecutionProvider"])
         if XGB_STOCK_PATH.exists():
             self.xgb_models["stock_demand"] = joblib.load(XGB_STOCK_PATH)
 
