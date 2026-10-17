@@ -13,6 +13,9 @@ from typing import List, Tuple, Optional, Union
 import joblib
 import numpy as np
 import pandas as pd
+import sklearn.utils
+if not hasattr(sklearn.utils, 'tosequence'):
+    sklearn.utils.tosequence = list
 from sklearn_pandas import DataFrameMapper
 from sklearn.preprocessing import StandardScaler, OrdinalEncoder, OneHotEncoder
 

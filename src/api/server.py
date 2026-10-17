@@ -120,6 +120,15 @@ app = FastAPI(
     description="Multi-model ONNX runtime service for Asset Health, Logistics Delays, and Inventory Stockout Prediction."
 )
 
+from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 class ModelManager:
     """Manages lazy-loaded ONNX runtime sessions and preprocessors."""

@@ -28,3 +28,9 @@ scratch/
 *.cert
 *.crt
 KEY01.pem
+
+# Frontend Node Dependencies & Builds
+frontend/node_modules/
+frontend/dist/
+frontend/.oxlintrc.json
+
