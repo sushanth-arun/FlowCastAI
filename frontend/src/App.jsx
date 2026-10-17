@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import Topbar from './components/Topbar';
 import KpiCards from './components/KpiCards';
+import IncidentAlertCard from './components/IncidentAlertCard';
 import RecommendationCard from './components/RecommendationCard';
 import InventoryImpactCard from './components/InventoryImpactCard';
 import ScenarioModal from './components/ScenarioModal';
@@ -127,11 +128,14 @@ export default function App() {
                 focalShortageCost={optimizationResult?.baselineTotalCost || 4000}
               />
 
-              {/* Decision Workspace: Recommendation + Inventory Impact */}
+              {/* Decision Workspace: Disruption Incident + Inventory Impact */}
               <div className="decision-grid">
-                {/* Section 4: AI Recovery Recommendation */}
-                <RecommendationCard
+                {/* Section 2: Active Disruption Incident & Prescriptive Response */}
+                <IncidentAlertCard
+                  shipment={shipments.find(s => s.id === 'SHP-CH-01') || shipments[0]}
                   optimizationResult={optimizationResult}
+                  onNavigateToDecisions={() => setActiveTab('recommendations')}
+                  onNavigateToShipments={() => setActiveTab('shipments')}
                   onCompareScenarios={() => setIsScenarioModalOpen(true)}
                 />
 

@@ -1,7 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { X, CheckCircle2, AlertTriangle, ShieldAlert, Award } from 'lucide-react';
 
 export default function ScenarioModal({ isOpen, onClose, options, recommendedId }) {
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen || !options) return null;
 
   return (
@@ -14,8 +24,8 @@ export default function ScenarioModal({ isOpen, onClose, options, recommendedId 
               Constrained optimization evaluation for Warehouse A (SKU FLW-9402)
             </div>
           </div>
-          <button className="modal-close-btn" onClick={onClose} title="Close">
-            <X size={20} />
+          <button className="modal-close-btn" onClick={onClose} title="Close (Esc)">
+            <X size={18} />
           </button>
         </div>
 
@@ -112,15 +122,15 @@ export default function ScenarioModal({ isOpen, onClose, options, recommendedId 
               })}
             </tbody>
           </table>
+        </div>
 
-          <div style={{ marginTop: '20px', padding: '12px 16px', background: '#F8FAFD', borderRadius: '8px', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ fontSize: '0.78rem', color: '#475569' }}>
-              <strong>Mathematical Formulation:</strong> Objective solves min(Action_Cost + &Sigma; Unmet &times; Penalty_Rate) subject to Source_Stock - &Delta;Stock &ge; Safety_Threshold.
-            </div>
-            <button className="btn-primary" onClick={onClose}>
-              Done Viewing
-            </button>
+        <div className="modal-footer">
+          <div style={{ fontSize: '0.78rem', color: '#475569' }}>
+            <strong>Mathematical Formulation:</strong> Objective solves min(Action_Cost + &Sigma; Unmet &times; Penalty_Rate) subject to Source_Stock - &Delta;Stock &ge; Safety_Threshold.
           </div>
+          <button className="btn-primary" onClick={onClose} style={{ minWidth: 120 }}>
+            Done Viewing
+          </button>
         </div>
       </div>
     </div>
