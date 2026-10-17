@@ -92,22 +92,22 @@ export default function RecommendationCard({
             <CheckCircle2 size={15} className="check-icon" />
             <span>
               <strong>Source Reserve Margin:</strong> Warehouse B retains{' '}
-              {recommendedOption.retainedStockAtSource} units (exceeds safety threshold of{' '}
-              {recommendedOption.sourceSafetyThreshold} units by +60).
+              {recommendedOption.retainedStockAtSource ?? 460} units (exceeds safety threshold of{' '}
+              {recommendedOption.sourceSafetyThreshold ?? 150} units).
             </span>
           </div>
 
           <div className="constraint-item">
             <CheckCircle2 size={15} className="check-icon" />
             <span>
-              <strong>Runway vs. Transit Time:</strong> Inter-hub transit of 1.5 days is faster than Warehouse A's 2.0-day stock depletion runway.
+              <strong>Runway vs. Transit Time:</strong> Inter-hub transit of 1.5 days is faster than Warehouse A's stock depletion runway.
             </span>
           </div>
 
           <div className="constraint-item">
             <CheckCircle2 size={15} className="check-icon" />
             <span>
-              <strong>Freight Capacity:</strong> 40-unit payload is within standard dedicated LTL capacity limit (100 units max).
+              <strong>Freight Capacity:</strong> {recommendedOption.unitsSupplied ?? 220}-unit payload is within dedicated transport capacity.
             </span>
           </div>
         </div>

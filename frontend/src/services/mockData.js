@@ -2,166 +2,149 @@
  * FlowCast AI — Operational Data & Scenario Simulation Engine
  * IBM Z Datathon 2026 | Real-Time AI for Critical Decisions
  * 
- * Demonstrates the 3-warehouse supply chain disruption scenario:
- * - Warehouse A (Chicago): 20 units (Critical Shortage due to delayed shipment SHP-8821)
- * - Warehouse B (Detroit): 150 units (Surplus: 100 units above safety threshold)
- * - Warehouse C (Columbus): 80 units (Surplus: 35 units above safety threshold)
+ * 3-Warehouse Supply Chain Disruption Scenario:
+ * - Warehouse A (Chennai): 160 units (Critical Shortage due to delayed shipment SHP-CH-01)
+ * - Warehouse B (Bengaluru): 680 units (Surplus: +530 units above safety threshold)
+ * - Warehouse C (Hyderabad): 450 units (Surplus: +250 units above safety threshold)
  */
 
 export const INITIAL_WAREHOUSES = [
   {
     id: 'WH-A',
-    code: 'ORD-CHI-01',
-    name: 'Warehouse A (Chicago Hub)',
-    location: 'Chicago, IL',
-    role: 'Assembly & Fulfillment Center',
-    currentStock: 20,
-    safetyStock: 30,
-    maxCapacity: 250,
-    dailyDemand: 10,
+    code: 'MAA-CHE-01',
+    name: 'Warehouse A (Chennai Hub)',
+    location: 'Chennai, Tamil Nadu',
+    role: 'Fulfillment & Critical Target',
+    currentStock: 160,
+    safetyStock: 150,
+    maxCapacity: 500,
+    dailyDemand: 20,
     status: 'critical',
     statusLabel: 'Critical Shortage Risk',
     color: '#EF4444',
-    incomingShipmentId: 'SHP-8821',
-    coordinates: { lat: 41.8781, lng: -87.6298 }
+    incomingShipmentId: 'SHP-CH-01',
+    coordinates: { lat: 13.0827, lng: 80.2707 }
   },
   {
     id: 'WH-B',
-    code: 'DTW-MI-02',
-    name: 'Warehouse B (Detroit Distribution)',
-    location: 'Detroit, MI',
+    code: 'BLR-KA-02',
+    name: 'Warehouse B (Bengaluru Hub)',
+    location: 'Bengaluru, Karnataka',
     role: 'Regional Component Reserve Hub',
-    currentStock: 150,
-    safetyStock: 50,
-    maxCapacity: 300,
-    dailyDemand: 6,
+    currentStock: 680,
+    safetyStock: 150,
+    maxCapacity: 600,
+    dailyDemand: 15,
     status: 'surplus',
-    statusLabel: 'Significant Surplus (+100 usable)',
+    statusLabel: 'Significant Surplus (+530 usable)',
     color: '#10B981',
     transitDaysToA: 1.5,
     transferUnitCost: 8,
     transferFixedCost: 130,
-    distanceMiles: 282,
-    coordinates: { lat: 42.3314, lng: -83.0458 }
+    distanceMiles: 215,
+    coordinates: { lat: 12.9716, lng: 77.5946 }
   },
   {
     id: 'WH-C',
-    code: 'CMH-OH-03',
-    name: 'Warehouse C (Columbus Depot)',
-    location: 'Columbus, OH',
-    role: 'Secondary Distribution Center',
-    currentStock: 80,
-    safetyStock: 45,
-    maxCapacity: 200,
-    dailyDemand: 5,
+    code: 'HYD-TS-03',
+    name: 'Warehouse C (Hyderabad Hub)',
+    location: 'Hyderabad, Telangana',
+    role: 'Secondary Distribution Depot',
+    currentStock: 450,
+    safetyStock: 200,
+    maxCapacity: 450,
+    dailyDemand: 12,
     status: 'moderate',
-    statusLabel: 'Moderate Surplus (+35 usable)',
+    statusLabel: 'Moderate Surplus (+250 usable)',
     color: '#3B6FF5',
     transitDaysToA: 2.0,
     transferUnitCost: 12,
     transferFixedCost: 200,
-    distanceMiles: 355,
-    coordinates: { lat: 39.9612, lng: -82.9988 }
+    distanceMiles: 390,
+    coordinates: { lat: 17.3850, lng: 78.4867 }
   }
 ];
 
 export const INITIAL_SHIPMENTS = [
   {
-    id: 'SHP-8821',
-    sku: 'FLW-9402',
-    productName: 'Automotive ECU Controller Module',
+    id: 'SHP-CH-01',
+    sku: 'PRD-101',
+    productName: 'IoT Telemetry Sensor Nodes',
     destinationWarehouseId: 'WH-A',
-    destinationName: 'Warehouse A (Chicago Hub)',
-    origin: 'Apex Global Logistics (Port of Newark, NJ)',
-    quantity: 50,
-    scheduledArrival: 'Oct 20, 2026',
-    predictedDelayDays: 4.0,
+    destinationName: 'Warehouse A (Chennai Hub)',
+    origin: 'Port of Chennai',
+    quantity: 180,
+    scheduledArrival: 'Delayed (+3 Days)',
+    predictedDelayDays: 3.0,
     delayProbability: 0.88,
     riskLevel: 'High',
     riskBadgeColor: 'red',
     status: 'Delayed (Port Congestion)',
     isFocalScenario: true,
-    transportMode: 'Standard Intermodal Freight',
-    estimatedCarrierSlaPenalty: '$4,000 (at $100/unit unmet)'
+    transportMode: 'Intermodal Freight',
+    estimatedCarrierSlaPenalty: '$26,400 (at $120/unit unmet)'
   },
   {
-    id: 'SHP-7940',
-    sku: 'FLW-3108',
-    productName: 'Precision Stepper Motor 24V',
-    destinationWarehouseId: 'WH-B',
-    destinationName: 'Warehouse B (Detroit Distribution)',
-    origin: 'Nordic Sensor Dynamics (Chicago, IL)',
-    quantity: 120,
-    scheduledArrival: 'Oct 21, 2026',
-    predictedDelayDays: 0.5,
-    delayProbability: 0.21,
+    id: 'SHP-CH-02',
+    sku: 'PRD-102',
+    productName: 'Smart Cardio Monitor Units',
+    destinationWarehouseId: 'WH-A',
+    destinationName: 'Warehouse A (Chennai Hub)',
+    origin: 'Sri City Hub',
+    quantity: 80,
+    scheduledArrival: 'Tomorrow, 10:00',
+    predictedDelayDays: 0.4,
+    delayProbability: 0.15,
     riskLevel: 'Low',
     riskBadgeColor: 'green',
-    status: 'On Schedule (In Transit)',
+    status: 'On Schedule',
     isFocalScenario: false,
-    transportMode: 'Dedicated Truckload (FTL)'
+    transportMode: 'Intermodal Freight'
   },
   {
-    id: 'SHP-9104',
-    sku: 'FLW-5520',
-    productName: 'Thermal Management Heatsink Fin 4U',
-    destinationWarehouseId: 'WH-A',
-    destinationName: 'Warehouse A (Chicago Hub)',
-    origin: 'Pacific Alloy Machining (Long Beach, CA)',
-    quantity: 80,
-    scheduledArrival: 'Oct 23, 2026',
-    predictedDelayDays: 2.5,
-    delayProbability: 0.65,
-    riskLevel: 'Medium',
-    riskBadgeColor: 'amber',
-    status: 'Customs Clearance Delay',
+    id: 'SHP-BLR-01',
+    sku: 'PRD-101',
+    productName: 'IoT Telemetry Sensor Nodes',
+    destinationWarehouseId: 'WH-B',
+    destinationName: 'Warehouse B (Bengaluru Hub)',
+    origin: 'Hosur Gateway',
+    quantity: 150,
+    scheduledArrival: 'Today, 21:00',
+    predictedDelayDays: 0.4,
+    delayProbability: 0.18,
+    riskLevel: 'Low',
+    riskBadgeColor: 'green',
+    status: 'On Schedule',
     isFocalScenario: false,
-    transportMode: 'Rail Intermodal'
+    transportMode: 'Dedicated Truckload'
   },
   {
-    id: 'SHP-6512',
-    sku: 'FLW-1049',
-    productName: 'Optoelectronic Coupler IC Array',
+    id: 'SHP-HYD-01',
+    sku: 'PRD-101',
+    productName: 'IoT Telemetry Sensor Nodes',
     destinationWarehouseId: 'WH-C',
-    destinationName: 'Warehouse C (Columbus Depot)',
-    origin: 'East Coast Semiconductor (Boston, MA)',
-    quantity: 200,
-    scheduledArrival: 'Oct 24, 2026',
-    predictedDelayDays: 0.3,
+    destinationName: 'Warehouse C (Hyderabad Hub)',
+    origin: 'Shamshabad Cargo Terminal',
+    quantity: 100,
+    scheduledArrival: 'Tomorrow, 08:00',
+    predictedDelayDays: 0.4,
     delayProbability: 0.14,
     riskLevel: 'Low',
     riskBadgeColor: 'green',
-    status: 'Dispatched from Hub',
+    status: 'On Schedule',
     isFocalScenario: false,
-    transportMode: 'Priority Ground'
-  },
-  {
-    id: 'SHP-8319',
-    sku: 'FLW-8812',
-    productName: 'Power Isolation Transformer 500W',
-    destinationWarehouseId: 'WH-B',
-    destinationName: 'Warehouse B (Detroit Distribution)',
-    origin: 'Midwest Forge & Coil (Cleveland, OH)',
-    quantity: 45,
-    scheduledArrival: 'Oct 22, 2026',
-    predictedDelayDays: 3.2,
-    delayProbability: 0.74,
-    riskLevel: 'High',
-    riskBadgeColor: 'red',
-    status: 'Carrier Capacity Delay',
-    isFocalScenario: false,
-    transportMode: 'Less-than-Truckload (LTL)'
+    transportMode: 'Dedicated Truckload'
   }
 ];
 
 export const INITIAL_KPIS = {
-  totalShipments: 148,
-  activeInTransit: 34,
-  atRiskShipments: 6,
-  highRiskShipments: 2,
+  totalShipments: 4,
+  activeInTransit: 4,
+  atRiskShipments: 1,
+  highRiskShipments: 1,
   criticalLowStockItems: 1,
-  estimatedPotentialCostImpact: 18400,
-  immediateFocalImpact: 4000
+  estimatedPotentialCostImpact: 26400,
+  immediateFocalImpact: 26400
 };
 
 /**
@@ -176,24 +159,24 @@ export const INITIAL_KPIS = {
  */
 export function calculateOptimization(params = {}) {
   const {
-    delayDays = 4.0,
-    dailyDemand = 10,
+    delayDays = 3.0,
+    dailyDemand = 20,
     whBTransferUnitCost = 8,
     whCTransferUnitCost = 12,
-    shortagePenaltyPerUnit = 100,
-    expediteAirCost = 1350,
-    whACurrentStock = 20,
-    whBSurplusTotal = 150,
-    whBSafetyStock = 50,
-    whCSurplusTotal = 80,
-    whCSafetyStock = 45
+    shortagePenaltyPerUnit = 120,
+    expediteAirCost = 8100,
+    whACurrentStock = 160,
+    whBSurplusTotal = 680,
+    whBSafetyStock = 150,
+    whCSurplusTotal = 450,
+    whCSafetyStock = 200
   } = params;
 
   // Warehouse A stock runway
   const runwayDays = Number((whACurrentStock / dailyDemand).toFixed(1));
   
   // Total arrival horizon with delay
-  const normalArrivalDays = 2.0;
+  const normalArrivalDays = 1.0;
   const actualArrivalDays = Number((normalArrivalDays + delayDays).toFixed(1));
   
   // Total demand required until shipment arrives
@@ -201,14 +184,14 @@ export function calculateOptimization(params = {}) {
   
   // Shortage without any recovery intervention
   const unconstrainedShortage = Math.max(0, totalDemandUntilArrival - whACurrentStock);
-  const neededUnits = Math.min(unconstrainedShortage, 50); // incoming shipment volume is 50
+  const neededUnits = Math.min(unconstrainedShortage, 220); // target shortage is up to 220 units
 
   // 1. Baseline Option (No Action)
   const baselineUnmetUnits = neededUnits;
   const baselinePenaltyCost = baselineUnmetUnits * shortagePenaltyPerUnit;
   const baselineTotalCost = baselinePenaltyCost;
 
-  // 2. Warehouse B Transfer Evaluation
+  // 2. Warehouse B Transfer Evaluation (Bengaluru)
   const whBUsableSurplus = Math.max(0, whBSurplusTotal - whBSafetyStock);
   const whBTransferUnits = Math.min(neededUnits, whBUsableSurplus);
   const whBTransitDays = 1.5;
@@ -216,9 +199,9 @@ export function calculateOptimization(params = {}) {
   const whBUnmetUnits = Math.max(0, neededUnits - whBTransferUnits);
   const whBPenaltyCost = whBUnmetUnits * shortagePenaltyPerUnit;
   const whBTotalCost = whBActionCost + whBPenaltyCost;
-  const whBFeasible = whBTransferUnits === neededUnits && whBTransitDays <= (runwayDays + 0.5);
+  const whBFeasible = whBTransferUnits === neededUnits && whBTransitDays <= (runwayDays + 1.0);
 
-  // 3. Warehouse C Transfer Evaluation
+  // 3. Warehouse C Transfer Evaluation (Hyderabad)
   const whCUsableSurplus = Math.max(0, whCSurplusTotal - whCSafetyStock);
   const whCTransferUnits = Math.min(neededUnits, whCUsableSurplus);
   const whCTransitDays = 2.0;
@@ -226,10 +209,10 @@ export function calculateOptimization(params = {}) {
   const whCUnmetUnits = Math.max(0, neededUnits - whCTransferUnits);
   const whCPenaltyCost = whCUnmetUnits * shortagePenaltyPerUnit;
   const whCTotalCost = whCActionCost + whCPenaltyCost;
-  const whCFeasible = whCTransferUnits >= neededUnits && whCTransitDays <= runwayDays;
+  const whCFeasible = whCTransferUnits >= neededUnits && whCTransitDays <= (runwayDays + 0.5);
 
   // 4. Expedited Supplier Air Freight
-  const airTransitDays = 1.5;
+  const airTransitDays = 1.0;
   const airActionCost = expediteAirCost;
   const airUnmetUnits = 0;
   const airTotalCost = airActionCost;
@@ -239,9 +222,9 @@ export function calculateOptimization(params = {}) {
   const options = [
     {
       id: 'opt-b',
-      title: 'Inter-Warehouse Transfer from Warehouse B (Detroit)',
+      title: 'Inter-Warehouse Transfer from Bengaluru Hub (WH-B)',
       type: 'STOCK_TRANSFER',
-      sourceWarehouse: 'Warehouse B (Detroit Distribution)',
+      sourceWarehouse: 'Warehouse B (Bengaluru Hub)',
       sourceCode: 'WH-B',
       unitsSupplied: whBTransferUnits,
       transitTimeDays: whBTransitDays,
@@ -259,9 +242,9 @@ export function calculateOptimization(params = {}) {
     },
     {
       id: 'opt-c',
-      title: 'Inter-Warehouse Transfer from Warehouse C (Columbus)',
+      title: 'Inter-Warehouse Transfer from Hyderabad Hub (WH-C)',
       type: 'STOCK_TRANSFER',
-      sourceWarehouse: 'Warehouse C (Columbus Depot)',
+      sourceWarehouse: 'Warehouse C (Hyderabad Hub)',
       sourceCode: 'WH-C',
       unitsSupplied: whCTransferUnits,
       transitTimeDays: whCTransitDays,
@@ -274,14 +257,14 @@ export function calculateOptimization(params = {}) {
       isFeasible: whCFeasible,
       retainedStockAtSource: whCSurplusTotal - whCTransferUnits,
       sourceSafetyThreshold: whCSafetyStock,
-      constraintNotes: `C capped at +${whCUsableSurplus} usable units to preserve ${whCSafetyStock} safety stock. Leaves ${whCUnmetUnits} units unmet.`,
+      constraintNotes: `Hyderabad retains ${whCSurplusTotal - whCTransferUnits} units to preserve safety stock. Transfers ${whCTransferUnits} units.`,
       urgencyBadge: whCUnmetUnits > 0 ? 'Partial Recovery Only' : 'Feasible'
     },
     {
       id: 'opt-air',
-      title: 'Expedited Direct Air Freight from Supplier',
+      title: 'Expedited Direct Air Freight from Port of Chennai',
       type: 'EXPEDITED_FREIGHT',
-      sourceWarehouse: 'Apex Global Logistics (Port of Newark)',
+      sourceWarehouse: 'Port of Chennai Cargo Terminal',
       sourceCode: 'SUPPLIER-AIR',
       unitsSupplied: neededUnits,
       transitTimeDays: airTransitDays,
@@ -294,7 +277,7 @@ export function calculateOptimization(params = {}) {
       isFeasible: airFeasible,
       retainedStockAtSource: 'N/A',
       sourceSafetyThreshold: 'N/A',
-      constraintNotes: 'Cuts shipment lead time to 1.5 days. Prevents all shortage but carries high air courier surcharge.',
+      constraintNotes: 'Cuts shipment lead time to 1.0 day via priority dedicated air courier. Prevents shortage but incurs premium freight surcharge.',
       urgencyBadge: 'High Cost Alternative'
     },
     {

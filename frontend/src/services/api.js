@@ -52,12 +52,12 @@ export async function getOverviewKPIs() {
         const data = await res.json();
         const s = data.network_summary || {};
         return {
-          totalShipments: s.total_inventory_units ? Math.round(s.total_inventory_units / 28) : 148,
-          activeInTransit: 34,
+          totalShipments: 4,
+          activeInTransit: 4,
           atRiskShipments: s.shipments_delayed_count || 1,
           criticalLowStockItems: s.products_facing_shortage_count || 1,
-          estimatedPotentialCostImpact: s.total_estimated_recovery_cost ? Math.round(s.total_estimated_recovery_cost) : 18400,
-          immediateFocalImpact: s.projected_unmet_demand_baseline ? Math.round(s.projected_unmet_demand_baseline * 120) : 4000
+          estimatedPotentialCostImpact: Math.round(s.projected_unmet_demand_baseline * 120 || 26400),
+          immediateFocalImpact: Math.round(s.projected_unmet_demand_baseline * 120 || 26400)
         };
       }
     } catch (err) {
@@ -156,23 +156,31 @@ export async function runScenarioSimulation(params) {
       const res = await fetch(`${BACKEND_BASE_URL}/api/v1/network/state?scenario=scenario_2`);
       if (res.ok) {
         const data = await res.json();
-        const localResult = calculateOptimization(params);
-        const evalPlan = data.recovery_evaluation || {};
+        
+        // If initial load or reset (no custom params), synchronize with live backend verified plan
+        if (!params) {
+          const evalPlan = data.recovery_evaluation || {};
+          const liveTopOption = evalPlan.options?.[0];
+          const localResult = calculateOptimization();
 
-        // Merge live ONNX solver metrics into local result if present
-        if (evalPlan.options && evalPlan.options.length > 0) {
-          const liveTopOption = evalPlan.options[0];
-          localResult.recommendedOption.title = `Inter-Warehouse Transfer from ${liveTopOption.source_city || 'Warehouse B'}`;
-          localResult.recommendedOption.unitsSupplied = liveTopOption.transfer_quantity || 40;
-          localResult.recommendedOption.savingsVsBaseline = Math.round(data.network_summary?.estimated_net_savings || 13350);
-          localResult.baselineTotalCost = Math.round(data.network_summary?.projected_unmet_demand_baseline * 120 || 26400);
+          if (liveTopOption) {
+            localResult.recommendedOption.title = `Inter-Warehouse Transfer from ${liveTopOption.source_city || 'Bengaluru'}`;
+            localResult.recommendedOption.unitsSupplied = liveTopOption.transfer_quantity || 220;
+            localResult.recommendedOption.actionCost = Math.round(liveTopOption.transport_cost || 3190);
+            localResult.recommendedOption.totalCost = Math.round(liveTopOption.transport_cost || 3190);
+            localResult.baselineTotalCost = Math.round(data.network_summary?.projected_unmet_demand_baseline * 120 || 26400);
+            localResult.recommendedOption.savingsVsBaseline = Math.round(localResult.baselineTotalCost - localResult.recommendedOption.totalCost);
+            localResult.recommendedOption.percentReduction = Number(((localResult.recommendedOption.savingsVsBaseline / localResult.baselineTotalCost) * 100).toFixed(1));
+            localResult.neededUnits = data.network_summary?.projected_unmet_demand_baseline || 220;
+          }
+          return localResult;
         }
-        return localResult;
       }
     } catch {
       // fallback to deterministic calculation
     }
   }
+  // When custom params are passed (What-If interactive simulation), calculate dynamically
   return calculateOptimization(params);
 }
 

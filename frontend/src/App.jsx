@@ -26,7 +26,7 @@ import {
 export default function App() {
   const [activeTab, setActiveTab] = useState('overview');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedShipmentId, setSelectedShipmentId] = useState('SHP-8821');
+  const [selectedShipmentId, setSelectedShipmentId] = useState('SHP-CH-01');
   const [isScenarioModalOpen, setIsScenarioModalOpen] = useState(false);
 
   // Core Data State
@@ -77,14 +77,9 @@ export default function App() {
   // Handler for selecting shipment
   const handleSelectShipment = (id) => {
     setSelectedShipmentId(id);
-    // If selecting focal shipment SHP-8821, reset or align scenario
-    if (id === 'SHP-8821') {
-      handleRunSimulation({
-        delayDays: 4.0,
-        dailyDemand: 10,
-        whBTransferUnitCost: 8,
-        shortagePenaltyPerUnit: 100
-      });
+    // If selecting focal shipment SHP-CH-01, reset or align scenario
+    if (id === 'SHP-CH-01') {
+      handleRunSimulation();
     }
   };
 
@@ -94,7 +89,7 @@ export default function App() {
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        atRiskCount={kpis.atRiskShipments || 6}
+        atRiskCount={shipments.filter(s => s.riskLevel === 'High' || s.riskLevel === 'Medium').length || 1}
       />
 
       {/* 2. Main Wrapper */}
@@ -107,7 +102,7 @@ export default function App() {
           isBackendLive={isBackendLive}
           onNotificationClick={() => {
             setActiveTab('shipments');
-            setSelectedShipmentId('SHP-8821');
+            setSelectedShipmentId('SHP-CH-01');
           }}
         />
 
@@ -128,7 +123,10 @@ export default function App() {
               {/* Section 1: 4 Summary KPI Cards */}
               <KpiCards
                 kpis={kpis}
-                focalShortageCost={optimizationResult?.baselineTotalCost || 4000}
+                shipments={shipments}
+                warehouses={warehouses}
+                optimizationResult={optimizationResult}
+                focalShortageCost={optimizationResult?.baselineTotalCost || 26400}
               />
 
               {/* Decision Workspace: Recommendation + Inventory Impact */}
