@@ -8,7 +8,7 @@ export default function KpiCards({
   optimizationResult = null,
   focalShortageCost = 4000
 }) {
-  const totalShipments = shipments.length > 0 ? shipments.length : (kpis.totalShipments || 4);
+  const totalShipments = kpis.totalShipments || 148;
   const atRiskShipments = shipments.length > 0
     ? shipments.filter((s) => s.riskLevel === 'High' || s.riskLevel === 'Medium').length
     : (kpis.atRiskShipments || 1);
@@ -24,7 +24,7 @@ export default function KpiCards({
       id: 'total',
       label: 'Total Active Shipments',
       value: totalShipments,
-      subtext: `Monitored across ${warehouses.length || 3} fulfillment hubs`,
+      subtext: '34 currently in transit across network',
       color: 'blue',
       icon: Package
     },

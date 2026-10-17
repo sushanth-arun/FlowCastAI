@@ -36,9 +36,9 @@ export default function ShipmentTable({ shipments, selectedShipmentId, onSelectS
     <div className="card-container" style={{ marginTop: '28px' }}>
       <div className="table-controls-bar">
         <div>
-          <div className="card-heading">Active Inbound Shipments & Delay Risk Predictions</div>
+          <div className="card-heading">Priority Monitored Inbound Shipments & Delay Risk Predictions</div>
           <div className="card-subheading">
-            Trained delay risk inference for incoming component shipments
+            Active AI delay risk inference for 4 priority supply routes feeding Chennai, Bengaluru & Hyderabad hubs
           </div>
         </div>
 

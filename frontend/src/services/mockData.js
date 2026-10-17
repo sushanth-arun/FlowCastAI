@@ -138,8 +138,8 @@ export const INITIAL_SHIPMENTS = [
 ];
 
 export const INITIAL_KPIS = {
-  totalShipments: 4,
-  activeInTransit: 4,
+  totalShipments: 148,
+  activeInTransit: 34,
   atRiskShipments: 1,
   highRiskShipments: 1,
   criticalLowStockItems: 1,
