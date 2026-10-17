@@ -4,8 +4,6 @@ import Topbar from './components/Topbar';
 import KpiCards from './components/KpiCards';
 import RecommendationCard from './components/RecommendationCard';
 import InventoryImpactCard from './components/InventoryImpactCard';
-import ShipmentTable from './components/ShipmentTable';
-import WhatIfSimulator from './components/WhatIfSimulator';
 import ScenarioModal from './components/ScenarioModal';
 
 // Dedicated Tab Views
@@ -143,22 +141,6 @@ export default function App() {
                   optimizationResult={optimizationResult}
                 />
               </div>
-
-              {/* Section 2: Shipment Risk Overview Table */}
-              <ShipmentTable
-                shipments={shipments}
-                selectedShipmentId={selectedShipmentId}
-                onSelectShipment={handleSelectShipment}
-                searchQuery={searchQuery}
-              />
-
-              {/* Section 5: What-If Interactive Simulator */}
-              <WhatIfSimulator
-                currentParams={optimizationResult?.inputParams}
-                onRunSimulation={handleRunSimulation}
-                isSimulating={isSimulating}
-                optimizationResult={optimizationResult}
-              />
             </div>
           )}
 
