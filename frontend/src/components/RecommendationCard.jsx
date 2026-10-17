@@ -92,8 +92,8 @@ export default function RecommendationCard({
             <CheckCircle2 size={15} className="check-icon" />
             <span>
               <strong>Source Reserve Margin:</strong> Warehouse B retains{' '}
-              {recommendedOption.retainedStockAtSource ?? 460} units (exceeds safety threshold of{' '}
-              {recommendedOption.sourceSafetyThreshold ?? 150} units).
+              {recommendedOption.retainedStockAtSource ?? 110} units (exceeds safety threshold of{' '}
+              {recommendedOption.sourceSafetyThreshold ?? 50} units).
             </span>
           </div>
 
@@ -107,7 +107,7 @@ export default function RecommendationCard({
           <div className="constraint-item">
             <CheckCircle2 size={15} className="check-icon" />
             <span>
-              <strong>Freight Capacity:</strong> {recommendedOption.unitsSupplied ?? 220}-unit payload is within dedicated transport capacity.
+              <strong>Freight Capacity:</strong> {recommendedOption.unitsSupplied ?? 40}-unit payload is within dedicated transport capacity.
             </span>
           </div>
         </div>

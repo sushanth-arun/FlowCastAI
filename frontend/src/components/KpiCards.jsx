@@ -6,7 +6,7 @@ export default function KpiCards({
   shipments = [],
   warehouses = [],
   optimizationResult = null,
-  focalShortageCost = 26400
+  focalShortageCost = 4000
 }) {
   const totalShipments = shipments.length > 0 ? shipments.length : (kpis.totalShipments || 4);
   const atRiskShipments = shipments.length > 0
@@ -16,8 +16,8 @@ export default function KpiCards({
     ? warehouses.filter((w) => w.status === 'critical').length
     : (kpis.criticalLowStockItems || 1);
   const criticalHubName = warehouses.find((w) => w.status === 'critical')?.name || 'Warehouse A (Chennai Hub)';
-  const costAtRisk = optimizationResult?.baselineTotalCost || kpis.estimatedPotentialCostImpact || focalShortageCost || 26400;
-  const savings = optimizationResult?.recommendedOption?.savingsVsBaseline || 23210;
+  const costAtRisk = optimizationResult?.baselineTotalCost || kpis.estimatedPotentialCostImpact || focalShortageCost || 4000;
+  const savings = optimizationResult?.recommendedOption?.savingsVsBaseline || 3550;
 
   const cards = [
     {

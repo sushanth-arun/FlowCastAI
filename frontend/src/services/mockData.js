@@ -15,10 +15,10 @@ export const INITIAL_WAREHOUSES = [
     name: 'Warehouse A (Chennai Hub)',
     location: 'Chennai, Tamil Nadu',
     role: 'Fulfillment & Critical Target',
-    currentStock: 160,
-    safetyStock: 150,
-    maxCapacity: 500,
-    dailyDemand: 20,
+    currentStock: 20,
+    safetyStock: 30,
+    maxCapacity: 250,
+    dailyDemand: 10,
     status: 'critical',
     statusLabel: 'Critical Shortage Risk',
     color: '#EF4444',
@@ -31,12 +31,12 @@ export const INITIAL_WAREHOUSES = [
     name: 'Warehouse B (Bengaluru Hub)',
     location: 'Bengaluru, Karnataka',
     role: 'Regional Component Reserve Hub',
-    currentStock: 680,
-    safetyStock: 150,
-    maxCapacity: 600,
-    dailyDemand: 15,
+    currentStock: 150,
+    safetyStock: 50,
+    maxCapacity: 300,
+    dailyDemand: 6,
     status: 'surplus',
-    statusLabel: 'Significant Surplus (+530 usable)',
+    statusLabel: 'Significant Surplus (+100 usable)',
     color: '#10B981',
     transitDaysToA: 1.5,
     transferUnitCost: 8,
@@ -50,12 +50,12 @@ export const INITIAL_WAREHOUSES = [
     name: 'Warehouse C (Hyderabad Hub)',
     location: 'Hyderabad, Telangana',
     role: 'Secondary Distribution Depot',
-    currentStock: 450,
-    safetyStock: 200,
-    maxCapacity: 450,
-    dailyDemand: 12,
+    currentStock: 80,
+    safetyStock: 45,
+    maxCapacity: 200,
+    dailyDemand: 5,
     status: 'moderate',
-    statusLabel: 'Moderate Surplus (+250 usable)',
+    statusLabel: 'Moderate Surplus (+35 usable)',
     color: '#3B6FF5',
     transitDaysToA: 2.0,
     transferUnitCost: 12,
@@ -143,8 +143,8 @@ export const INITIAL_KPIS = {
   atRiskShipments: 1,
   highRiskShipments: 1,
   criticalLowStockItems: 1,
-  estimatedPotentialCostImpact: 26400,
-  immediateFocalImpact: 26400
+  estimatedPotentialCostImpact: 4000,
+  immediateFocalImpact: 4000
 };
 
 /**
@@ -159,24 +159,24 @@ export const INITIAL_KPIS = {
  */
 export function calculateOptimization(params = {}) {
   const {
-    delayDays = 3.0,
-    dailyDemand = 20,
+    delayDays = 4.0,
+    dailyDemand = 10,
     whBTransferUnitCost = 8,
     whCTransferUnitCost = 12,
-    shortagePenaltyPerUnit = 120,
-    expediteAirCost = 8100,
-    whACurrentStock = 160,
-    whBSurplusTotal = 680,
-    whBSafetyStock = 150,
-    whCSurplusTotal = 450,
-    whCSafetyStock = 200
+    shortagePenaltyPerUnit = 100,
+    expediteAirCost = 1350,
+    whACurrentStock = 20,
+    whBSurplusTotal = 150,
+    whBSafetyStock = 50,
+    whCSurplusTotal = 80,
+    whCSafetyStock = 45
   } = params;
 
   // Warehouse A stock runway
   const runwayDays = Number((whACurrentStock / dailyDemand).toFixed(1));
   
   // Total arrival horizon with delay
-  const normalArrivalDays = 1.0;
+  const normalArrivalDays = 2.0;
   const actualArrivalDays = Number((normalArrivalDays + delayDays).toFixed(1));
   
   // Total demand required until shipment arrives
@@ -184,7 +184,7 @@ export function calculateOptimization(params = {}) {
   
   // Shortage without any recovery intervention
   const unconstrainedShortage = Math.max(0, totalDemandUntilArrival - whACurrentStock);
-  const neededUnits = Math.min(unconstrainedShortage, 220); // target shortage is up to 220 units
+  const neededUnits = Math.min(unconstrainedShortage, 50); // incoming shipment volume is 50
 
   // 1. Baseline Option (No Action)
   const baselineUnmetUnits = neededUnits;
@@ -199,7 +199,7 @@ export function calculateOptimization(params = {}) {
   const whBUnmetUnits = Math.max(0, neededUnits - whBTransferUnits);
   const whBPenaltyCost = whBUnmetUnits * shortagePenaltyPerUnit;
   const whBTotalCost = whBActionCost + whBPenaltyCost;
-  const whBFeasible = whBTransferUnits === neededUnits && whBTransitDays <= (runwayDays + 1.0);
+  const whBFeasible = whBTransferUnits === neededUnits && whBTransitDays <= (runwayDays + 0.5);
 
   // 3. Warehouse C Transfer Evaluation (Hyderabad)
   const whCUsableSurplus = Math.max(0, whCSurplusTotal - whCSafetyStock);
@@ -209,10 +209,10 @@ export function calculateOptimization(params = {}) {
   const whCUnmetUnits = Math.max(0, neededUnits - whCTransferUnits);
   const whCPenaltyCost = whCUnmetUnits * shortagePenaltyPerUnit;
   const whCTotalCost = whCActionCost + whCPenaltyCost;
-  const whCFeasible = whCTransferUnits >= neededUnits && whCTransitDays <= (runwayDays + 0.5);
+  const whCFeasible = whCTransferUnits >= neededUnits && whCTransitDays <= runwayDays;
 
   // 4. Expedited Supplier Air Freight
-  const airTransitDays = 1.0;
+  const airTransitDays = 1.5;
   const airActionCost = expediteAirCost;
   const airUnmetUnits = 0;
   const airTotalCost = airActionCost;

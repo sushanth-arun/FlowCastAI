@@ -126,7 +126,7 @@ export default function App() {
                 shipments={shipments}
                 warehouses={warehouses}
                 optimizationResult={optimizationResult}
-                focalShortageCost={optimizationResult?.baselineTotalCost || 26400}
+                focalShortageCost={optimizationResult?.baselineTotalCost || 4000}
               />
 
               {/* Decision Workspace: Recommendation + Inventory Impact */}
