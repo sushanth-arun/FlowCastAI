@@ -14,10 +14,15 @@ import json
 import joblib
 import numpy as np
 import pandas as pd
-import onnxruntime as ort
+try:
+    import onnxruntime as ort
+except ImportError:
+    ort = None
 from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
+
+from src.models.inference_engine import UniversalInferenceSession
 
 from src.config import (
     ARTIFACTS_DIR,
@@ -131,41 +136,66 @@ app.add_middleware(
 
 
 class ModelManager:
-    """Manages lazy-loaded ONNX runtime sessions and preprocessors."""
+    """Manages lazy-loaded ONNX runtime / universal NumPy inference sessions and preprocessors."""
     _instance = None
 
     def __init__(self):
-        self.sessions: Dict[str, ort.InferenceSession] = {}
+        self.sessions: Dict[str, Any] = {}
         self.mappers: Dict[str, Any] = {}
         self.xgb_models: Dict[str, Any] = {}
         self._init_models()
 
     def _init_models(self):
         # Session options optimized for high-throughput enterprise execution
-        opts = ort.SessionOptions()
-        opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
-        opts.intra_op_num_threads = 4
+        opts = None
+        if ort is not None:
+            opts = ort.SessionOptions()
+            opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+            opts.intra_op_num_threads = 4
+
+        weights_dict = {}
+        np_weights_path = ARTIFACTS_DIR / "model_weights_numpy.joblib"
+        if np_weights_path.exists():
+            try:
+                weights_dict = joblib.load(np_weights_path)
+            except Exception:
+                pass
 
         # 1. Module 1: Asset Health
         if MAPPER_PATH.exists():
             self.mappers["health"] = joblib.load(MAPPER_PATH)
         health_model = MODEL1_HEALTH_ONNX if MODEL1_HEALTH_ONNX.exists() else ONNX_MODEL_PATH
-        if health_model.exists():
-            self.sessions["health"] = ort.InferenceSession(str(health_model), opts, providers=["CPUExecutionProvider"])
+        self.sessions["health"] = UniversalInferenceSession(
+            "health",
+            health_model if health_model.exists() else None,
+            weights_dict.get("health"),
+            opts
+        )
 
         # 2. Module 2: Logistics Delays
         if MAPPER_DELAYS_PATH.exists():
             self.mappers["delays"] = joblib.load(MAPPER_DELAYS_PATH)
-        if MODEL2_DELAYS_ONNX.exists():
-            self.sessions["delays"] = ort.InferenceSession(str(MODEL2_DELAYS_ONNX), opts, providers=["CPUExecutionProvider"])
+        self.sessions["delays"] = UniversalInferenceSession(
+            "delays",
+            MODEL2_DELAYS_ONNX if MODEL2_DELAYS_ONNX.exists() else None,
+            weights_dict.get("delays"),
+            opts
+        )
 
         # 3. Module 3: Stockout & Demand
         if MAPPER_STOCK_PATH.exists():
             self.mappers["stock"] = joblib.load(MAPPER_STOCK_PATH)
-        if MODEL3_STOCK_ONNX.exists():
-            self.sessions["stock"] = ort.InferenceSession(str(MODEL3_STOCK_ONNX), opts, providers=["CPUExecutionProvider"])
+        self.sessions["stock"] = UniversalInferenceSession(
+            "stock",
+            MODEL3_STOCK_ONNX if MODEL3_STOCK_ONNX.exists() else None,
+            weights_dict.get("stock"),
+            opts
+        )
         if XGB_STOCK_PATH.exists():
-            self.xgb_models["stock_demand"] = joblib.load(XGB_STOCK_PATH)
+            try:
+                self.xgb_models["stock_demand"] = joblib.load(XGB_STOCK_PATH)
+            except Exception:
+                pass
 
     @classmethod
     def get_instance(cls):

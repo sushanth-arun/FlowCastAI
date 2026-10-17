@@ -3,7 +3,7 @@
 # Compatible with IBM LinuxONE, z/OS Container Extensions (zCX), & Cloud
 # =============================================================
 
-FROM python:3.8-slim
+FROM python:3.11-slim
 
 # Avoid prompts during apt installs
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -20,9 +20,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Set working directory
 WORKDIR /app
 
-# Install Python requirements
+# Upgrade pip and install Python requirements
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Copy serialized model artifacts, datasets, and source code
 COPY artifacts/ ./artifacts/
