@@ -8,24 +8,24 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
 
   const { runwayDays, actualArrivalDays, neededUnits, trajectory } = optimizationResult;
 
-  // Chart coordinate mapping
+  // Chart coordinate mapping - perfectly calibrated for responsive aspect ratio
   const chartWidth = 560;
-  const chartHeight = 180;
-  const padLeft = 40;
-  const padRight = 20;
-  const padTop = 20;
-  const padBottom = 28;
+  const chartHeight = 185;
+  const padLeft = 38;
+  const padRight = 18;
+  const padTop = 16;
+  const padBottom = 26;
 
   const innerWidth = chartWidth - padLeft - padRight;
   const innerHeight = chartHeight - padTop - padBottom;
 
-  const maxVal = 90; // scale y-axis up to 90 units
-  const minVal = 0;
+  // Scale y-axis to 70 units (maximum trajectory value is 60, giving optimal vertical distribution)
+  const maxVal = 70;
 
   const getX = (dNum) => padLeft + (dNum / 7) * innerWidth;
   const getY = (val) => padTop + innerHeight - (Math.min(maxVal, Math.max(0, val)) / maxVal) * innerHeight;
 
-  // Safety stock y
+  // Safety stock threshold y-coordinate
   const safetyY = getY(30);
 
   // Generate SVG path for Baseline
@@ -34,11 +34,14 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
   // Generate SVG path for Recommended
   const recommendedPath = trajectory.map((pt, i) => `${i === 0 ? 'M' : 'L'} ${getX(pt.dayNum)} ${getY(pt.recommendedStock)}`).join(' ');
 
+  // Area under recommended curve
+  const recAreaPath = `${recommendedPath} L ${getX(7)} ${getY(0)} L ${getX(0)} ${getY(0)} Z`;
+
   // Fill area under baseline curve to show shortage area
   const stockoutFillPath = `M ${getX(2)} ${getY(0)} L ${getX(Math.min(6, Math.round(actualArrivalDays)))} ${getY(0)} L ${getX(Math.min(6, Math.round(actualArrivalDays)))} ${getY(30)} L ${getX(2)} ${getY(30)} Z`;
 
   return (
-    <div className="card-container" style={{ minWidth: 0, overflow: 'hidden' }}>
+    <div className="card-container" style={{ minWidth: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div className="card-header-row" style={{ flexWrap: 'wrap', gap: 10, alignItems: 'flex-start' }}>
         <div style={{ minWidth: 0, flex: 1 }}>
           <div className="card-heading">Warehouse Inventory & Shortage Projection</div>
@@ -64,7 +67,6 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
         {warehouses.map((wh) => {
           const isA = wh.id === 'WH-A';
           const isB = wh.id === 'WH-B';
-          const isC = wh.id === 'WH-C';
 
           return (
             <div
@@ -99,42 +101,41 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
       </div>
 
       {/* SVG Interactive Trajectory Chart */}
-      <div className="chart-wrapper" style={{ width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
+      <div className="chart-wrapper" style={{ width: '100%', position: 'relative' }}>
         <svg
           viewBox={`0 0 ${chartWidth} ${chartHeight}`}
           preserveAspectRatio="xMidYMid meet"
-          style={{ width: '100%', height: 'auto', display: 'block', maxWidth: '100%' }}
+          style={{ width: '100%', height: 'auto', display: 'block' }}
         >
           <defs>
             <linearGradient id="recGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#3B6FF5" stopOpacity="0.25" />
+              <stop offset="0%" stopColor="#3B6FF5" stopOpacity="0.18" />
               <stop offset="100%" stopColor="#3B6FF5" stopOpacity="0.0" />
             </linearGradient>
             <linearGradient id="shortageGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#EF4444" stopOpacity="0.18" />
+              <stop offset="0%" stopColor="#EF4444" stopOpacity="0.16" />
               <stop offset="100%" stopColor="#EF4444" stopOpacity="0.04" />
             </linearGradient>
           </defs>
 
-          {/* Grid lines */}
-          {[0, 30, 60, 90].map((v) => (
+          {/* Grid lines: 0, 20, 40, 60 */}
+          {[0, 20, 40, 60].map((v) => (
             <g key={v}>
               <line
                 x1={padLeft}
                 y1={getY(v)}
                 x2={chartWidth - padRight}
                 y2={getY(v)}
-                stroke="#E2E8F0"
-                strokeDasharray={v === 30 ? "4 4" : "none"}
-                strokeWidth={v === 30 ? "1.5" : "1"}
+                stroke={v === 0 ? "#CBD5E1" : "#E2E8F0"}
+                strokeWidth={v === 0 ? "1.5" : "1"}
               />
               <text
-                x={padLeft - 8}
-                y={getY(v) + 4}
+                x={padLeft - 6}
+                y={getY(v) + 3.5}
                 textAnchor="end"
                 fontSize="10"
-                fill={v === 30 ? "#F59E0B" : "#94A3B8"}
-                fontWeight={v === 30 ? "600" : "400"}
+                fill="#64748B"
+                fontWeight="500"
               >
                 {v}
               </text>
@@ -143,20 +144,56 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
 
           {/* Stockout Zone highlight */}
           <path d={stockoutFillPath} fill="url(#shortageGrad)" />
+          <text
+            x={(getX(2) + getX(Math.min(6, Math.round(actualArrivalDays)))) / 2}
+            y={(getY(0) + getY(30)) / 2 + 3}
+            textAnchor="middle"
+            fontSize="9"
+            fill="#DC2626"
+            fontWeight="700"
+            letterSpacing="0.03em"
+            opacity="0.85"
+          >
+            CRITICAL STOCKOUT WINDOW (DAYS 2–6)
+          </text>
 
-          {/* Safety threshold label */}
+          {/* Safety threshold line */}
+          <line
+            x1={padLeft}
+            y1={safetyY}
+            x2={chartWidth - padRight}
+            y2={safetyY}
+            stroke="#F59E0B"
+            strokeDasharray="4 4"
+            strokeWidth="1.5"
+          />
+
+          {/* Safety threshold label with badge */}
+          <rect
+            x={chartWidth - padRight - 124}
+            y={safetyY - 14}
+            width="124"
+            height="13"
+            rx="3"
+            fill="#FFFBEB"
+            stroke="#FDE68A"
+            strokeWidth="0.8"
+          />
           <text
             x={chartWidth - padRight - 5}
-            y={safetyY - 5}
+            y={safetyY - 4}
             textAnchor="end"
             fontSize="9"
-            fill="#D97706"
-            fontWeight="600"
+            fill="#B45309"
+            fontWeight="700"
           >
             Safety Threshold (30u)
           </text>
 
-          {/* Baseline path (Red) */}
+          {/* Area fill under recommended line */}
+          <path d={recAreaPath} fill="url(#recGrad)" />
+
+          {/* Baseline path (Red Dashed) */}
           <path
             d={baselinePath}
             fill="none"
@@ -169,53 +206,84 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
           <path
             d={recommendedPath}
             fill="none"
-            stroke="#3B6FF5"
+            stroke="#2563EB"
             strokeWidth="3"
           />
 
           {/* Data Points */}
-          {trajectory.map((pt) => (
-            <g key={pt.dayNum}>
-              {/* Recommended dot */}
-              <circle
-                cx={getX(pt.dayNum)}
-                cy={getY(pt.recommendedStock)}
-                r={hoveredPoint === pt.dayNum ? "6" : "4"}
-                fill="#3B6FF5"
-                stroke="#FFFFFF"
-                strokeWidth="2"
-                style={{ cursor: 'pointer', transition: 'r 0.15s ease' }}
-                onMouseEnter={() => setHoveredPoint(pt.dayNum)}
-                onMouseLeave={() => setHoveredPoint(null)}
-              />
-              {/* Baseline dot */}
-              <circle
-                cx={getX(pt.dayNum)}
-                cy={getY(pt.baselineStock)}
-                r="3"
-                fill="#EF4444"
-                stroke="#FFFFFF"
-                strokeWidth="1.5"
-              />
+          {trajectory.map((pt) => {
+            const isHovered = hoveredPoint?.dayNum === pt.dayNum;
+            return (
+              <g key={pt.dayNum}>
+                {/* Recommended dot */}
+                <circle
+                  cx={getX(pt.dayNum)}
+                  cy={getY(pt.recommendedStock)}
+                  r={isHovered ? "6" : "4.5"}
+                  fill="#2563EB"
+                  stroke="#FFFFFF"
+                  strokeWidth="2"
+                  style={{ cursor: 'pointer', transition: 'r 0.15s ease' }}
+                  onMouseEnter={() => setHoveredPoint(pt)}
+                  onMouseLeave={() => setHoveredPoint(null)}
+                />
 
-              {/* Day Labels on X Axis */}
-              <text
-                x={getX(pt.dayNum)}
-                y={chartHeight - 6}
-                textAnchor="middle"
-                fontSize="10"
-                fill="#64748B"
-                fontWeight="500"
-              >
-                {pt.day.replace('Day ', 'D')}
+                {/* Baseline dot */}
+                <circle
+                  cx={getX(pt.dayNum)}
+                  cy={getY(pt.baselineStock)}
+                  r="3.5"
+                  fill="#EF4444"
+                  stroke="#FFFFFF"
+                  strokeWidth="1.5"
+                  style={{ cursor: 'pointer' }}
+                  onMouseEnter={() => setHoveredPoint(pt)}
+                  onMouseLeave={() => setHoveredPoint(null)}
+                />
+
+                {/* Day Labels on X Axis */}
+                <text
+                  x={getX(pt.dayNum)}
+                  y={chartHeight - 8}
+                  textAnchor="middle"
+                  fontSize="10"
+                  fill="#475569"
+                  fontWeight="600"
+                >
+                  {pt.day.replace('Day ', 'D')}
+                </text>
+              </g>
+            );
+          })}
+
+          {/* Interactive Tooltip Card on Hover */}
+          {hoveredPoint && (
+            <g transform={`translate(${Math.min(chartWidth - 145, Math.max(padLeft, getX(hoveredPoint.dayNum) - 65))}, ${Math.max(10, getY(hoveredPoint.recommendedStock) - 45)})`}>
+              <rect
+                width="130"
+                height="38"
+                rx="6"
+                fill="#0F172A"
+                opacity="0.94"
+                stroke="#334155"
+                strokeWidth="1"
+              />
+              <text x="8" y="14" fontSize="9" fill="#94A3B8" fontWeight="600">
+                {hoveredPoint.day} Projection
+              </text>
+              <text x="8" y="28" fontSize="10" fill="#60A5FA" fontWeight="700">
+                Rec: {hoveredPoint.recommendedStock}u
+              </text>
+              <text x="68" y="28" fontSize="10" fill="#F87171" fontWeight="700">
+                Base: {hoveredPoint.baselineStock}u
               </text>
             </g>
-          ))}
+          )}
         </svg>
       </div>
 
       {/* Chart Legend */}
-      <div className="chart-legend">
+      <div className="chart-legend" style={{ marginTop: 'auto' }}>
         <div className="legend-item">
           <div className="legend-color blue" />
           <span>Recommended Transfer from B (Restores Stock at Day 2)</span>
