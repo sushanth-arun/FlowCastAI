@@ -38,23 +38,23 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
   const stockoutFillPath = `M ${getX(2)} ${getY(0)} L ${getX(Math.min(6, Math.round(actualArrivalDays)))} ${getY(0)} L ${getX(Math.min(6, Math.round(actualArrivalDays)))} ${getY(30)} L ${getX(2)} ${getY(30)} Z`;
 
   return (
-    <div className="card-container">
-      <div className="card-header-row">
-        <div>
+    <div className="card-container" style={{ minWidth: 0, overflow: 'hidden' }}>
+      <div className="card-header-row" style={{ flexWrap: 'wrap', gap: 10, alignItems: 'flex-start' }}>
+        <div style={{ minWidth: 0, flex: 1 }}>
           <div className="card-heading">Warehouse Inventory & Shortage Projection</div>
-          <div className="card-subheading">
+          <div className="card-subheading" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             Live multi-warehouse balance sheet for SKU PRD-101 (IoT Telemetry Sensor Nodes)
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: '0.74rem', fontWeight: 600, color: '#EF4444', background: '#FEF2F2', padding: '3px 8px', borderRadius: 4, border: '1px solid #FCA5A5' }}>
-            <TrendingDown size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+          <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#EF4444', background: '#FEF2F2', padding: '3px 7px', borderRadius: 4, border: '1px solid #FCA5A5', whiteSpace: 'nowrap' }}>
+            <TrendingDown size={11} style={{ display: 'inline', marginRight: 3, verticalAlign: 'middle' }} />
             Runway: {runwayDays} Days
           </span>
-          <span style={{ fontSize: '0.74rem', fontWeight: 600, color: '#718096', background: '#EDF2F7', padding: '3px 8px', borderRadius: 4 }}>
-            <Clock size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
-            Shipment Delay: +{actualArrivalDays - 2}d
+          <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#718096', background: '#EDF2F7', padding: '3px 7px', borderRadius: 4, whiteSpace: 'nowrap' }}>
+            <Clock size={11} style={{ display: 'inline', marginRight: 3, verticalAlign: 'middle' }} />
+            Delay: +{actualArrivalDays - 2}d
           </span>
         </div>
       </div>
@@ -71,17 +71,12 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
               key={wh.id}
               className={`wh-mini-card ${isA ? 'active-target' : isB ? 'active-source' : ''}`}
             >
-              <div className="wh-header-block">
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, marginBottom: 5 }}>
-                  <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#14213D', whiteSpace: 'nowrap' }}>
-                    {wh.name.split(' (')[0]}
-                  </span>
-                  <span style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 600, background: '#F1F5F9', padding: '1px 6px', borderRadius: 4, whiteSpace: 'nowrap' }}>
-                    {isA ? 'Chennai' : isB ? 'Bengaluru' : 'Hyderabad'}
-                  </span>
+              <div className="wh-header-block" style={{ marginBottom: 4 }}>
+                <div style={{ fontSize: '0.84rem', fontWeight: 800, color: '#14213D', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {wh.name.split(' (')[0]}
                 </div>
-                <div style={{ marginBottom: 6 }}>
-                  <span className={`wh-tag ${isA ? 'red' : isB ? 'green' : 'blue'}`} style={{ whiteSpace: 'nowrap' }}>
+                <div style={{ marginTop: 3 }}>
+                  <span className={`wh-tag ${isA ? 'red' : isB ? 'green' : 'blue'}`}>
                     {isA ? 'Target Deficit' : isB ? 'Optimal Source' : 'Secondary Hub'}
                   </span>
                 </div>
@@ -89,13 +84,13 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
               <div className="wh-stock-metric">
                 {wh.currentStock} <span style={{ fontSize: '0.8rem', fontWeight: 500, color: '#64748B' }}>units</span>
               </div>
-              <div className="wh-stock-sub">
+              <div className="wh-stock-sub" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {isA ? (
-                  <span style={{ color: '#DC2626', fontWeight: 600 }}>Safety: {wh.safetyStock} (Deficit: -{neededUnits})</span>
+                  <span style={{ color: '#DC2626', fontWeight: 600 }}>Safety: {wh.safetyStock} (-{neededUnits} Deficit)</span>
                 ) : isB ? (
-                  <span style={{ color: '#059669', fontWeight: 600 }}>Surplus: +100 units above safety</span>
+                  <span style={{ color: '#059669', fontWeight: 600 }}>Surplus: +100 units</span>
                 ) : (
-                  <span style={{ color: '#2563EB', fontWeight: 600 }}>Surplus: +35 units above safety</span>
+                  <span style={{ color: '#2563EB', fontWeight: 600 }}>Surplus: +35 units</span>
                 )}
               </div>
             </div>
@@ -104,10 +99,11 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
       </div>
 
       {/* SVG Interactive Trajectory Chart */}
-      <div className="chart-wrapper">
+      <div className="chart-wrapper" style={{ width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
         <svg
           viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-          style={{ width: '100%', height: '100%', overflow: 'visible' }}
+          preserveAspectRatio="xMidYMid meet"
+          style={{ width: '100%', height: 'auto', display: 'block', maxWidth: '100%' }}
         >
           <defs>
             <linearGradient id="recGrad" x1="0" y1="0" x2="0" y2="1">
