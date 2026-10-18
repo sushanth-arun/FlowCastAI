@@ -23,6 +23,10 @@ FlowCast AI is deployed live inside an optimized container on the **IBM LinuxONE
 
 ## 🌟 System Architecture & Core Capabilities
 
+<p align="center">
+  <img src="docs/architecture.png" alt="FlowCast AI System Architecture & Inference Data Flowchart" width="100%" />
+</p>
+
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                        FlowCast AI — Enterprise Architecture Stack                     │
@@ -202,6 +206,8 @@ FlowCastAI/
 ├── data/                        # Supply chain datasets
 │   ├── bdt_mba_supplychain_dataset_2024.csv
 │   └── DataCoSupplyChainDataset.csv
+├── docs/                        # Architecture & System Diagrams
+│   └── architecture.png         # Dual-panel system architecture & inference flowchart
 ├── frontend/                    # Modern React 19 + Vite Dashboard
 │   ├── dist/                    # Compiled production assets served by FastAPI
 │   ├── src/
