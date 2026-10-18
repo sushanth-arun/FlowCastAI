@@ -30,7 +30,7 @@ export default function Topbar({
           <input
             type="text"
             className="search-input"
-            placeholder="Search shipments, SKUs (e.g., FLW-9402), or hubs..."
+            placeholder="Search shipments, SKUs (e.g., PRD-101), or hubs..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

@@ -21,7 +21,7 @@ export default function ScenarioModal({ isOpen, onClose, options, recommendedId 
           <div>
             <div className="modal-title">Operational Recovery Alternatives Comparison Matrix</div>
             <div style={{ fontSize: '0.78rem', color: '#64748B', marginTop: 2 }}>
-              Constrained optimization evaluation for Warehouse A (SKU FLW-9402)
+              Constrained optimization evaluation for Warehouse A (SKU PRD-101 &bull; IoT Telemetry Nodes)
             </div>
           </div>
           <button className="modal-close-btn" onClick={onClose} title="Close (Esc)">

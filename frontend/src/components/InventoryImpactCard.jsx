@@ -43,7 +43,7 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
         <div>
           <div className="card-heading">Warehouse Inventory & Shortage Projection</div>
           <div className="card-subheading">
-            Live multi-warehouse balance sheet for SKU FLW-9402 (Microcontroller Module)
+            Live multi-warehouse balance sheet for SKU PRD-101 (IoT Telemetry Sensor Nodes)
           </div>
         </div>
 

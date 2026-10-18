@@ -74,15 +74,15 @@ export const INITIAL_SHIPMENTS = [
     destinationName: 'Warehouse A (Chennai Hub)',
     origin: 'Port of Chennai',
     quantity: 180,
-    scheduledArrival: 'Delayed (+3 Days)',
-    predictedDelayDays: 3.0,
+    scheduledArrival: 'Delayed (+4 Days)',
+    predictedDelayDays: 4.0,
     delayProbability: 0.88,
     riskLevel: 'High',
     riskBadgeColor: 'red',
     status: 'Delayed (Port Congestion)',
     isFocalScenario: true,
     transportMode: 'Intermodal Freight',
-    estimatedCarrierSlaPenalty: '$26,400 (at $120/unit unmet)'
+    estimatedCarrierSlaPenalty: '$4,000 SLA Penalty'
   },
   {
     id: 'SHP-CH-02',
