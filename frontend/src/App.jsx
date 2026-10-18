@@ -154,6 +154,7 @@ export default function App() {
               selectedShipmentId={selectedShipmentId}
               onSelectShipment={handleSelectShipment}
               searchQuery={searchQuery}
+              onNavigateToDecisions={() => setActiveTab('recommendations')}
             />
           )}
 

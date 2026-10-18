@@ -8,7 +8,13 @@ import {
   Filter
 } from 'lucide-react';
 
-export default function ShipmentTable({ shipments, selectedShipmentId, onSelectShipment, searchQuery }) {
+export default function ShipmentTable({
+  shipments,
+  selectedShipmentId,
+  onSelectShipment,
+  searchQuery,
+  onAnalyzeShipment
+}) {
   const [riskFilter, setRiskFilter] = useState('ALL');
 
   // Filter shipments by search query and risk filter
@@ -99,7 +105,10 @@ export default function ShipmentTable({ shipments, selectedShipmentId, onSelectS
                 <tr
                   key={shp.id}
                   className={isSelected ? 'selected' : ''}
-                  onClick={() => onSelectShipment(shp.id)}
+                  onClick={() => {
+                    if (onAnalyzeShipment) onAnalyzeShipment(shp);
+                    else onSelectShipment(shp.id);
+                  }}
                   style={{ cursor: 'pointer' }}
                 >
                   <td className="shipment-id-cell">
@@ -160,13 +169,18 @@ export default function ShipmentTable({ shipments, selectedShipmentId, onSelectS
                   <td>
                     <button
                       className="btn-secondary"
-                      style={{ padding: '4px 10px', fontSize: '0.75rem' }}
+                      style={{ padding: '5px 12px', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: 4 }}
                       onClick={(e) => {
                         e.stopPropagation();
-                        onSelectShipment(shp.id);
+                        if (onAnalyzeShipment) {
+                          onAnalyzeShipment(shp);
+                        } else {
+                          onSelectShipment(shp.id);
+                        }
                       }}
+                      title="Open instant AI diagnostic popup"
                     >
-                      {isSelected ? 'Active Focus' : 'Analyze'}
+                      Analyze
                       <ChevronRight size={13} />
                     </button>
                   </td>

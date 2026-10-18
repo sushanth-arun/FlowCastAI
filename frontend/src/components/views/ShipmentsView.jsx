@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ShipmentTable from '../ShipmentTable';
-import { Truck, MapPin, Clock, ArrowRight, ShieldAlert } from 'lucide-react';
+import ShipmentDetailModal from '../ShipmentDetailModal';
+import { Truck, Server, Radio } from 'lucide-react';
 
-export default function ShipmentsView({ shipments, selectedShipmentId, onSelectShipment, searchQuery }) {
-  const selectedShipment = shipments.find(s => s.id === selectedShipmentId) || shipments[0];
+export default function ShipmentsView({
+  shipments,
+  selectedShipmentId,
+  onSelectShipment,
+  searchQuery,
+  onNavigateToDecisions
+}) {
+  const [modalShipment, setModalShipment] = useState(null);
+
+  const delayedCount = shipments.filter(s => s.riskLevel?.toUpperCase() === 'HIGH').length;
+  const onTimeCount = shipments.length - delayedCount;
 
   return (
     <div>
@@ -16,62 +26,75 @@ export default function ShipmentsView({ shipments, selectedShipmentId, onSelectS
         </div>
       </div>
 
-      {/* Selected Shipment Detail Card */}
-      {selectedShipment && (
-        <div className="card-container" style={{ marginBottom: '24px', background: '#FAFCFF', border: '1px solid #D6E4FF' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 8, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563EB' }}>
-                <Truck size={20} />
-              </div>
-              <div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#14213D' }}>
-                  {selectedShipment.id} — {selectedShipment.productName}
-                </div>
-                <div style={{ fontSize: '0.78rem', color: '#64748B' }}>
-                  SKU: {selectedShipment.sku} &bull; Batch Quantity: {selectedShipment.quantity} units
-                </div>
-              </div>
-            </div>
-
-            <span className={`risk-badge ${selectedShipment.riskLevel === 'High' ? 'red' : selectedShipment.riskLevel === 'Medium' ? 'amber' : 'green'}`}>
-              Delay Probability: {Math.round(selectedShipment.delayProbability * 100)}% ({selectedShipment.riskLevel} Risk)
+      {/* Network Surveillance Status Bar */}
+      <div
+        style={{
+          background: '#FFFFFF',
+          borderRadius: 10,
+          padding: '14px 20px',
+          border: '1px solid #E2E8F0',
+          marginBottom: 20,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: 12
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span
+              className="status-dot"
+              style={{ background: '#10B981', boxShadow: '0 0 8px rgba(16, 185, 129, 0.6)' }}
+            />
+            <span style={{ fontSize: '0.84rem', fontWeight: 700, color: '#1E293B' }}>
+              Active Route Surveillance
             </span>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, background: '#FFFFFF', padding: '16px', borderRadius: '10px', border: '1px solid #E2E8F0' }}>
-            <div>
-              <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600 }}>ORIGIN CARRIER</div>
-              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#14213D', marginTop: 4 }}>{selectedShipment.origin}</div>
-              <div style={{ fontSize: '0.72rem', color: '#94A3B8' }}>{selectedShipment.transportMode}</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600 }}>DESTINATION HUB</div>
-              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#14213D', marginTop: 4 }}>{selectedShipment.destinationName}</div>
-              <div style={{ fontSize: '0.72rem', color: '#94A3B8' }}>Assembly Line 2 Demand</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600 }}>PREDICTED DELAY</div>
-              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: selectedShipment.predictedDelayDays >= 3 ? '#DC2626' : '#2563EB', marginTop: 4 }}>
-                +{selectedShipment.predictedDelayDays} Days
-              </div>
-              <div style={{ fontSize: '0.72rem', color: '#94A3B8' }}>ETA: Oct 24, 2026 (Revised)</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600 }}>DISRUPTION CAUSE</div>
-              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#334155', marginTop: 4 }}>{selectedShipment.status}</div>
-              <div style={{ fontSize: '0.72rem', color: '#DC2626', fontWeight: 600 }}>{selectedShipment.estimatedCarrierSlaPenalty || 'SLA OK'}</div>
-            </div>
+          <div style={{ fontSize: '0.78rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: 16 }}>
+            <span>Total Tracked: <strong style={{ color: '#1E293B' }}>{shipments.length} Routes</strong></span>
+            <span>Critical Delays: <strong style={{ color: '#EF4444' }}>{delayedCount}</strong></span>
+            <span>On Schedule: <strong style={{ color: '#10B981' }}>{onTimeCount}</strong></span>
           </div>
         </div>
-      )}
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            fontSize: '0.74rem',
+            color: '#64748B',
+            background: '#F8FAFD',
+            padding: '5px 12px',
+            borderRadius: 6,
+            border: '1px solid #E2E8F0'
+          }}
+        >
+          <Server size={13} color="#3B6FF5" />
+          <span>Click <strong>"Analyze"</strong> on any shipment to open instant AI diagnostic popup</span>
+        </div>
+      </div>
 
       {/* Shipment Table */}
       <ShipmentTable
         shipments={shipments}
         selectedShipmentId={selectedShipmentId}
         onSelectShipment={onSelectShipment}
+        onAnalyzeShipment={(shp) => {
+          if (onSelectShipment) onSelectShipment(shp.id);
+          setModalShipment(shp);
+        }}
         searchQuery={searchQuery}
+      />
+
+      {/* Instant Shipment Diagnostic Modal Popup */}
+      <ShipmentDetailModal
+        isOpen={!!modalShipment}
+        onClose={() => setModalShipment(null)}
+        shipment={modalShipment}
+        onNavigateToDecisions={onNavigateToDecisions}
       />
     </div>
   );
