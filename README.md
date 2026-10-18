@@ -24,48 +24,8 @@ FlowCast AI is deployed live inside an optimized container on the **IBM LinuxONE
 ## 🌟 System Architecture & Core Capabilities
 
 <p align="center">
-  <img src="docs/architecture.png" alt="FlowCast AI System Architecture & Inference Data Flowchart" width="100%" />
+  <img src="docs/flowcast_architecture.png" alt="FlowCast AI System Architecture & Inference Data Flowchart" width="100%" />
 </p>
-
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        FlowCast AI — Enterprise Architecture Stack                     │
-│                                                                                        │
-│   ┌────────────────────────────────────────────────────────────────────────────────┐   │
-│   │               React 19 + Vite Modern Decision Control Dashboard               │   │
-│   │    • Incident Alert Triage Banner          • 148-Shipment Paginated Fleet      │   │
-│   │    • Responsive Multi-Warehouse Bars       • Interactive What-If Simulator     │   │
-│   └───────────────────────────────────────┬────────────────────────────────────────┘   │
-│                                           │  RESTful JSON API                          │
-│                                           ▼                                            │
-│   ┌────────────────────────────────────────────────────────────────────────────────┐   │
-│   │                    FastAPI Enterprise Orchestration Gateway                    │   │
-│   │                     (High-Throughput Sub-Millisecond Scoring)                  │   │
-│   └───────┬───────────────────────────────┬───────────────────────────────┬────────┘   │
-│           │                               │                               │            │
-│           ▼                               ▼                               ▼            │
-│   ┌───────────────┐               ┌───────────────┐               ┌───────────────┐    │
-│   │   Module 1    │               │   Module 2    │               │   Module 3    │    │
-│   │  Asset Health │               │Logistics Delay│               │Stockout Surge │    │
-│   │  & Telemetry  │               │   Forecast    │               │  & Demand Reg │    │
-│   └───────┬───────┘               └───────┬───────┘               └───────┬───────┘    │
-│           │                               │                               │            │
-│           └───────────────────────┬───────┴───────────────────────────────┘            │
-│                                   ▼                                                    │
-│   ┌────────────────────────────────────────────────────────────────────────────────┐   │
-│   │           3-Warehouse Disruption Recovery & Rebalancing Solver Engine          │   │
-│   │    • Chennai (WH-A)        • Bengaluru (WH-B)         • Hyderabad (WH-C)       │   │
-│   │    • Safety-Stock Conservation     • Strict No Double-Allocation Constraint   │   │
-│   └────────────────────────────────────────────────────────────────────────────────┘   │
-│                                           │                                            │
-│                                           ▼                                            │
-│   ┌────────────────────────────────────────────────────────────────────────────────┐   │
-│   │                 IBM Z / LinuxONE Hardware Acceleration & Security              │   │
-│   │    • IBM Telum In-Transaction AI Execution    • 99.999% "Five Nines" Uptime    │   │
-│   │    • Pervasive CPACF Hardware Encryption      • Native Linux s390x Container   │   │
-│   └────────────────────────────────────────────────────────────────────────────────┘   │
-└────────────────────────────────────────────────────────────────────────────────────────┘
-```
 
 ---
 
@@ -207,7 +167,7 @@ FlowCastAI/
 │   ├── bdt_mba_supplychain_dataset_2024.csv
 │   └── DataCoSupplyChainDataset.csv
 ├── docs/                        # Architecture & System Diagrams
-│   └── architecture.png         # Dual-panel system architecture & inference flowchart
+│   └── flowcast_architecture.png # High-resolution system architecture & inference flowchart
 ├── frontend/                    # Modern React 19 + Vite Dashboard
 │   ├── dist/                    # Compiled production assets served by FastAPI
 │   ├── src/
