@@ -896,6 +896,7 @@ a {
 /* SVG Chart */
 .chart-wrapper {
   width: 100%;
+  height: 190px;
   position: relative;
   display: block;
   margin-top: 4px;

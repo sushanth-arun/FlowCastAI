@@ -1,25 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Warehouse, TrendingDown, Clock, AlertTriangle, CheckCircle } from 'lucide-react';
 
 export default function InventoryImpactCard({ warehouses, optimizationResult }) {
   const [hoveredPoint, setHoveredPoint] = useState(null);
+  const wrapperRef = useRef(null);
+  const [chartWidth, setChartWidth] = useState(700);
+
+  // Measure container width dynamically to keep 1:1 scale on both half-width (Overview) and full-width (Inventory) views
+  useEffect(() => {
+    if (!wrapperRef.current) return;
+    const updateWidth = () => {
+      if (wrapperRef.current) {
+        const w = wrapperRef.current.clientWidth;
+        if (w > 0) setChartWidth(w);
+      }
+    };
+    updateWidth();
+
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.contentRect.width > 0) {
+          setChartWidth(Math.round(entry.contentRect.width));
+        }
+      }
+    });
+
+    ro.observe(wrapperRef.current);
+    return () => ro.disconnect();
+  }, []);
 
   if (!optimizationResult) return null;
 
   const { runwayDays, actualArrivalDays, neededUnits, trajectory } = optimizationResult;
 
-  // Chart coordinate mapping - perfectly calibrated for responsive aspect ratio
-  const chartWidth = 560;
-  const chartHeight = 185;
+  // Chart coordinate mapping - dynamic responsive width with fixed sleek 190px height
+  const chartHeight = 190;
   const padLeft = 38;
   const padRight = 18;
   const padTop = 16;
   const padBottom = 26;
 
-  const innerWidth = chartWidth - padLeft - padRight;
-  const innerHeight = chartHeight - padTop - padBottom;
+  const innerWidth = Math.max(200, chartWidth - padLeft - padRight);
+  const innerHeight = chartHeight - padTop - padBottom; // 148px
 
-  // Scale y-axis to 70 units (maximum trajectory value is 60, giving optimal vertical distribution)
+  // Scale y-axis up to 70 units so trajectory (peaks at 60) fills the vertical canvas cleanly
   const maxVal = 70;
 
   const getX = (dNum) => padLeft + (dNum / 7) * innerWidth;
@@ -41,7 +65,7 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
   const stockoutFillPath = `M ${getX(2)} ${getY(0)} L ${getX(Math.min(6, Math.round(actualArrivalDays)))} ${getY(0)} L ${getX(Math.min(6, Math.round(actualArrivalDays)))} ${getY(30)} L ${getX(2)} ${getY(30)} Z`;
 
   return (
-    <div className="card-container" style={{ minWidth: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div className="card-container" style={{ minWidth: 0, display: 'flex', flexDirection: 'column' }}>
       <div className="card-header-row" style={{ flexWrap: 'wrap', gap: 10, alignItems: 'flex-start' }}>
         <div style={{ minWidth: 0, flex: 1 }}>
           <div className="card-heading">Warehouse Inventory & Shortage Projection</div>
@@ -100,21 +124,25 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
         })}
       </div>
 
-      {/* SVG Interactive Trajectory Chart */}
-      <div className="chart-wrapper" style={{ width: '100%', position: 'relative' }}>
+      {/* SVG Interactive Trajectory Chart with True 1:1 Aspect Ratio */}
+      <div
+        ref={wrapperRef}
+        className="chart-wrapper"
+        style={{ width: '100%', height: chartHeight, position: 'relative' }}
+      >
         <svg
           viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-          preserveAspectRatio="xMidYMid meet"
-          style={{ width: '100%', height: 'auto', display: 'block' }}
+          preserveAspectRatio="none"
+          style={{ width: '100%', height: '100%', display: 'block' }}
         >
           <defs>
             <linearGradient id="recGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#3B6FF5" stopOpacity="0.18" />
+              <stop offset="0%" stopColor="#3B6FF5" stopOpacity="0.16" />
               <stop offset="100%" stopColor="#3B6FF5" stopOpacity="0.0" />
             </linearGradient>
             <linearGradient id="shortageGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#EF4444" stopOpacity="0.16" />
-              <stop offset="100%" stopColor="#EF4444" stopOpacity="0.04" />
+              <stop offset="0%" stopColor="#EF4444" stopOpacity="0.14" />
+              <stop offset="100%" stopColor="#EF4444" stopOpacity="0.03" />
             </linearGradient>
           </defs>
 
@@ -151,7 +179,7 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
             fontSize="9"
             fill="#DC2626"
             fontWeight="700"
-            letterSpacing="0.03em"
+            letterSpacing="0.04em"
             opacity="0.85"
           >
             CRITICAL STOCKOUT WINDOW (DAYS 2–6)
@@ -198,7 +226,7 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
             d={baselinePath}
             fill="none"
             stroke="#EF4444"
-            strokeWidth="2.5"
+            strokeWidth="2.2"
             strokeDasharray="5 3"
           />
 
@@ -207,7 +235,7 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
             d={recommendedPath}
             fill="none"
             stroke="#2563EB"
-            strokeWidth="3"
+            strokeWidth="2.8"
           />
 
           {/* Data Points */}
@@ -219,7 +247,7 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
                 <circle
                   cx={getX(pt.dayNum)}
                   cy={getY(pt.recommendedStock)}
-                  r={isHovered ? "6" : "4.5"}
+                  r={isHovered ? "5.5" : "4"}
                   fill="#2563EB"
                   stroke="#FFFFFF"
                   strokeWidth="2"
@@ -232,10 +260,10 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
                 <circle
                   cx={getX(pt.dayNum)}
                   cy={getY(pt.baselineStock)}
-                  r="3.5"
+                  r="3"
                   fill="#EF4444"
                   stroke="#FFFFFF"
-                  strokeWidth="1.5"
+                  strokeWidth="1.2"
                   style={{ cursor: 'pointer' }}
                   onMouseEnter={() => setHoveredPoint(pt)}
                   onMouseLeave={() => setHoveredPoint(null)}
