@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Bell, Database, UserCheck } from 'lucide-react';
+import { Search, Bell, Database } from 'lucide-react';
 
 export default function Topbar({
   activeTab,
@@ -56,11 +56,6 @@ export default function Topbar({
           <Bell size={18} />
           <span className="badge-counter">2</span>
         </button>
-
-        <div className="user-profile-btn">
-          <div className="user-avatar">Z3</div>
-          <span className="user-name">Team FlowCast</span>
-        </div>
       </div>
     </header>
   );
