@@ -58,7 +58,7 @@ export default function IncidentAlertCard({
                 Active Disruption Incident Alert
               </span>
               <span className="risk-badge red" style={{ fontSize: '0.68rem', padding: '2px 7px' }}>
-                Level 1 Critical
+                Action Required
               </span>
             </div>
             <div style={{ fontSize: '0.76rem', color: '#7F1D1D', marginTop: 2 }}>
