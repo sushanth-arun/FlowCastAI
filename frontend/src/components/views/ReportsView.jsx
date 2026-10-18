@@ -36,7 +36,7 @@ export default function ReportsView({ optimizationResult }) {
               $3,550 Preserved on Single Disruption Event ({percentSaved}% Cost Reduction)
             </div>
             <p style={{ fontSize: '0.86rem', color: '#CBD5E1', lineHeight: 1.5 }}>
-              By triggering an early inter-warehouse stock transfer from Warehouse B (Detroit) 2 days prior to stock exhaustion at Warehouse A (Chicago), FlowCast AI completely eliminated 40 units of unmet OEM demand, avoiding customer SLA breach penalties.
+              By triggering an early inter-warehouse stock transfer from Warehouse B (Bengaluru) 2.0 days prior to stock exhaustion at Warehouse A (Chennai Hub), FlowCast AI completely eliminated 40 units of unmet OEM demand, avoiding customer SLA breach penalties.
             </p>
           </div>
 

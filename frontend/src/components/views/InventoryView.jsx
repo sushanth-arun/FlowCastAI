@@ -41,13 +41,13 @@ export default function InventoryView({ warehouses, optimizationResult }) {
           <tbody>
             <tr>
               <td>
-                <div style={{ fontWeight: 700, color: '#14213D' }}>Warehouse B (Detroit Distribution)</div>
-                <div style={{ fontSize: '0.74rem', color: '#64748B' }}>DTW-MI-02 &bull; Total Stock: 150u</div>
+                <div style={{ fontWeight: 700, color: '#14213D' }}>Warehouse B (Bengaluru Hub)</div>
+                <div style={{ fontSize: '0.74rem', color: '#64748B' }}>Hosur Gateway &bull; Total Stock: 150u</div>
               </td>
-              <td style={{ fontWeight: 600 }}>Warehouse A (Chicago)</td>
-              <td>282 miles</td>
+              <td style={{ fontWeight: 600 }}>Warehouse A (Chennai Hub)</td>
+              <td>350 km</td>
               <td><strong>1.5 Days</strong> (Dedicated Freight)</td>
-              <td>$8/unit + $130 base</td>
+              <td>$8/unit + $130 base ($450 total)</td>
               <td>
                 <span style={{ color: '#059669', fontWeight: 700 }}>+100 units</span> (retains 50u safety)
               </td>
@@ -61,13 +61,13 @@ export default function InventoryView({ warehouses, optimizationResult }) {
 
             <tr>
               <td>
-                <div style={{ fontWeight: 700, color: '#14213D' }}>Warehouse C (Columbus Depot)</div>
-                <div style={{ fontSize: '0.74rem', color: '#64748B' }}>CMH-OH-03 &bull; Total Stock: 80u</div>
+                <div style={{ fontWeight: 700, color: '#14213D' }}>Warehouse C (Hyderabad Hub)</div>
+                <div style={{ fontSize: '0.74rem', color: '#64748B' }}>Shamshabad Depot &bull; Total Stock: 80u</div>
               </td>
-              <td style={{ fontWeight: 600 }}>Warehouse A (Chicago)</td>
-              <td>355 miles</td>
-              <td><strong>2.0 Days</strong> (Standard Ground)</td>
-              <td>$12/unit + $200 base</td>
+              <td style={{ fontWeight: 600 }}>Warehouse A (Chennai Hub)</td>
+              <td>625 km</td>
+              <td><strong>2.0 Days</strong> (Standard Express)</td>
+              <td>$12/unit + $200 base ($620 total)</td>
               <td>
                 <span style={{ color: '#2563EB', fontWeight: 700 }}>+35 units</span> (retains 45u safety)
               </td>
@@ -81,15 +81,15 @@ export default function InventoryView({ warehouses, optimizationResult }) {
 
             <tr>
               <td>
-                <div style={{ fontWeight: 700, color: '#14213D' }}>Apex Global Logistics (Port Newark)</div>
-                <div style={{ fontSize: '0.74rem', color: '#64748B' }}>Supplier Direct &bull; EWR-NJ</div>
+                <div style={{ fontWeight: 700, color: '#14213D' }}>Apex Air Logistics (Chennai Airport)</div>
+                <div style={{ fontSize: '0.74rem', color: '#64748B' }}>Supplier Direct &bull; MAA Air Cargo</div>
               </td>
-              <td style={{ fontWeight: 600 }}>Warehouse A (Chicago)</td>
-              <td>790 miles</td>
-              <td><strong>1.5 Days</strong> (Expedited Air Cargo)</td>
+              <td style={{ fontWeight: 600 }}>Warehouse A (Chennai Hub)</td>
+              <td>45 km</td>
+              <td><strong>1.0 Day</strong> (Expedited Air Freight)</td>
               <td>$1,350 flat expedite fee</td>
               <td>
-                <span style={{ color: '#64748B', fontWeight: 700 }}>50 units</span> (Complete Batch)
+                <span style={{ color: '#64748B', fontWeight: 700 }}>40 units</span> (Complete Batch)
               </td>
               <td>
                 <span className="risk-badge" style={{ background: '#F1F5F9', color: '#64748B' }}>
