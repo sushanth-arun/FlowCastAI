@@ -616,8 +616,8 @@ a {
 
 .decision-grid {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 24px;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
   margin-bottom: 28px;
 }
 
@@ -821,16 +821,18 @@ a {
 .warehouses-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 10px;
   margin-bottom: 18px;
 }
 
 .wh-mini-card {
   border-radius: var(--radius-md);
   border: 1px solid var(--border-subtle);
-  padding: 12px 14px;
+  padding: 12px 12px;
   background: #FFFFFF;
   transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .wh-mini-card.active-target {
@@ -855,10 +857,14 @@ a {
 }
 
 .wh-tag {
-  font-size: 0.65rem;
+  font-size: 0.67rem;
   font-weight: 700;
-  padding: 1px 6px;
+  padding: 2px 8px;
   border-radius: var(--radius-sm);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.25;
 }
 
 .wh-tag.red { background: var(--risk-high-bg); color: var(--risk-high); border: 1px solid var(--risk-high-border); }

@@ -71,11 +71,20 @@ export default function InventoryImpactCard({ warehouses, optimizationResult }) 
               key={wh.id}
               className={`wh-mini-card ${isA ? 'active-target' : isB ? 'active-source' : ''}`}
             >
-              <div className="wh-name">
-                <span>{wh.name.split(' (')[0]}</span>
-                <span className={`wh-tag ${isA ? 'red' : isB ? 'green' : 'blue'}`}>
-                  {isA ? 'Target Deficit' : isB ? 'Optimal Source' : 'Secondary'}
-                </span>
+              <div className="wh-header-block">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, marginBottom: 5 }}>
+                  <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#14213D', whiteSpace: 'nowrap' }}>
+                    {wh.name.split(' (')[0]}
+                  </span>
+                  <span style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 600, background: '#F1F5F9', padding: '1px 6px', borderRadius: 4, whiteSpace: 'nowrap' }}>
+                    {isA ? 'Chennai' : isB ? 'Bengaluru' : 'Hyderabad'}
+                  </span>
+                </div>
+                <div style={{ marginBottom: 6 }}>
+                  <span className={`wh-tag ${isA ? 'red' : isB ? 'green' : 'blue'}`} style={{ whiteSpace: 'nowrap' }}>
+                    {isA ? 'Target Deficit' : isB ? 'Optimal Source' : 'Secondary Hub'}
+                  </span>
+                </div>
               </div>
               <div className="wh-stock-metric">
                 {wh.currentStock} <span style={{ fontSize: '0.8rem', fontWeight: 500, color: '#64748B' }}>units</span>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   FileText,
   Server,
@@ -7,17 +7,12 @@ import {
   TrendingUp,
   Clock,
   Printer,
-  ChevronDown,
-  ChevronUp,
   CheckCircle2,
   AlertTriangle,
-  Building2,
-  Cpu
+  Building2
 } from 'lucide-react';
 
 export default function ReportsView({ optimizationResult }) {
-  const [showTechAppendix, setShowTechAppendix] = useState(false);
-
   const savings = optimizationResult?.recommendedOption?.savingsVsBaseline || 3550;
   const percentSaved = optimizationResult?.recommendedOption?.percentReduction || 88.8;
 
@@ -198,93 +193,6 @@ export default function ReportsView({ optimizationResult }) {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Expandable Technical Architecture & Verification Appendix (For IBM Datathon Judges) */}
-      <div
-        className="card-container"
-        style={{
-          border: '1px solid #CBD5E1',
-          background: showTechAppendix ? '#F8FAFD' : '#FFFFFF',
-          transition: 'all 0.2s ease'
-        }}
-      >
-        <div
-          onClick={() => setShowTechAppendix(!showTechAppendix)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            cursor: 'pointer',
-            userSelect: 'none'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Cpu size={18} color="#475569" />
-            <div>
-              <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#1E293B' }}>
-                Technical Architecture & IBM Z Datathon Verification Appendix
-              </div>
-              <div style={{ fontSize: '0.74rem', color: '#64748B' }}>
-                {showTechAppendix
-                  ? 'Click to collapse technical specification details'
-                  : 'Click to expand LinuxONE s390x execution specs, ML evaluation metrics, and integrity compliance'}
-              </div>
-            </div>
-          </div>
-
-          <button
-            className="btn-secondary"
-            style={{ padding: '6px 12px', fontSize: '0.74rem', display: 'flex', alignItems: 'center', gap: 4 }}
-          >
-            {showTechAppendix ? 'Hide Specs' : 'View Specs'}
-            {showTechAppendix ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-          </button>
-        </div>
-
-        {showTechAppendix && (
-          <div style={{ marginTop: 18, paddingTop: 16, borderTop: '1px solid #E2E8F0' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
-              {/* Left Column: LinuxONE Specs */}
-              <div>
-                <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#1E293B', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <Server size={14} color="#3B6FF5" />
-                  IBM LinuxONE s390x Execution Stack
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: '0.76rem', color: '#475569' }}>
-                  <div style={{ padding: '8px 10px', background: '#FFFFFF', borderRadius: 6, border: '1px solid #E2E8F0' }}>
-                    <strong>Architecture Compatibility:</strong> Native Python 3.11 with scikit-learn, NumPy, and ONNX Runtime verified on LinuxONE s390x enterprise mainframe environment.
-                  </div>
-                  <div style={{ padding: '8px 10px', background: '#FFFFFF', borderRadius: 6, border: '1px solid #E2E8F0' }}>
-                    <strong>High-Throughput Serving:</strong> Decoupled FastAPI async server delivering 67,000 requests/sec with an average model evaluation latency of 0.013 ms.
-                  </div>
-                  <div style={{ padding: '8px 10px', background: '#FFFFFF', borderRadius: 6, border: '1px solid #E2E8F0' }}>
-                    <strong>Deterministic Optimization:</strong> Scenarios are bounded by linear programming constraints, guaranteeing mathematical correctness and zero AI hallucination.
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column: Datathon Integrity Standards */}
-              <div>
-                <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#1E293B', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <ShieldCheck size={14} color="#059669" />
-                  Experimental Methodology & Scientific Integrity
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: '0.76rem', color: '#475569' }}>
-                  <div style={{ padding: '8px 10px', background: '#FFFFFF', borderRadius: 6, border: '1px solid #E2E8F0' }}>
-                    <strong>Zero Prediction Leakage:</strong> Delay risk inference strictly uses pre-arrival transit checkpoints and carrier EDI signals available at evaluation time; future arrival dates are excluded.
-                  </div>
-                  <div style={{ padding: '8px 10px', background: '#FFFFFF', borderRadius: 6, border: '1px solid #E2E8F0' }}>
-                    <strong>Class-Imbalance Evaluation:</strong> Models are validated across ROC-AUC (0.91), PR-AUC (0.87), and F1-score rather than misleading overall accuracy.
-                  </div>
-                  <div style={{ padding: '8px 10px', background: '#FFFFFF', borderRadius: 6, border: '1px solid #E2E8F0' }}>
-                    <strong>Hardware Honesty:</strong> Latency benchmarks reflect validated s390x CPU execution; no unverified claims regarding Telum AI accelerator co-processors are made without on-chip telemetry.
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
