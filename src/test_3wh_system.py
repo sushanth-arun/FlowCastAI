@@ -139,11 +139,13 @@ def test_consistent_cost_assumptions():
 
 def test_dashboard_and_api_endpoints():
     client = TestClient(app)
-    # Dashboard HTML
+    # Dashboard HTML (Modern React bundle or legacy fallback)
     res_dash = client.get("/")
     assert res_dash.status_code == 200
-    assert "3-Warehouse" in res_dash.text
-    assert "Chennai" in res_dash.text and "Bengaluru" in res_dash.text and "Hyderabad" in res_dash.text
+    assert "FlowCast AI" in res_dash.text
+    res_leg = client.get("/legacy")
+    assert res_leg.status_code == 200
+    assert "3-Warehouse" in res_leg.text
 
     # Preserved ML endpoints
     res_m1 = client.post("/api/v1/health", json={
