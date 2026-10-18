@@ -47,21 +47,16 @@ export default function IncidentAlertCard({
   return (
     <div className="card-container" style={{ display: 'flex', flexDirection: 'column', height: '100%', border: '1px solid #FECACA', background: '#FFFAFA' }}>
       {/* Incident Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 14, borderBottom: '1px solid #FEE2E2', marginBottom: 14 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 36, height: 36, borderRadius: 8, background: '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#DC2626' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 14, borderBottom: '1px solid #FEE2E2', marginBottom: 14, gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+          <div style={{ width: 38, height: 38, borderRadius: 8, background: '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#DC2626', flexShrink: 0 }}>
             <AlertTriangle size={20} />
           </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: '0.98rem', fontWeight: 800, color: '#991B1B' }}>
-                Active Disruption Incident Alert
-              </span>
-              <span className="risk-badge red" style={{ fontSize: '0.68rem', padding: '2px 7px' }}>
-                Action Required
-              </span>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: '0.98rem', fontWeight: 800, color: '#991B1B', whiteSpace: 'nowrap' }}>
+              Active Disruption Incident Alert
             </div>
-            <div style={{ fontSize: '0.76rem', color: '#7F1D1D', marginTop: 2 }}>
+            <div style={{ fontSize: '0.75rem', color: '#7F1D1D', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               Trained Delay Risk Inference (DataCo Model Confidence: {Math.round(fShipment.delayProbability * 100)}%)
             </div>
           </div>
@@ -70,11 +65,11 @@ export default function IncidentAlertCard({
         <button
           onClick={onNavigateToShipments}
           className="btn-secondary"
-          style={{ fontSize: '0.74rem', padding: '5px 10px', height: 'auto', background: '#FFFFFF', borderColor: '#FECACA', color: '#991B1B' }}
+          style={{ fontSize: '0.74rem', padding: '6px 12px', height: 'auto', background: '#FFFFFF', borderColor: '#FECACA', color: '#991B1B', whiteSpace: 'nowrap', flexShrink: 0, display: 'flex', alignItems: 'center', gap: 5 }}
           title="Inspect full carrier tracking"
         >
           View Carrier Feed
-          <ArrowRight size={13} style={{ marginLeft: 4 }} />
+          <ArrowRight size={13} />
         </button>
       </div>
 
