@@ -17,7 +17,7 @@ import {
 export const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL || 
   (typeof window !== 'undefined' && window.location.port !== '5173' && window.location.origin.startsWith('http') 
     ? window.location.origin 
-    : 'http://localhost:8000');
+    : 'http://148.100.108.248:8000');
 
 let isBackendLiveCached = null;
 

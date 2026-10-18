@@ -464,7 +464,7 @@ def predict_stockout_risk(req: StockoutRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    print("Launching FlowCast AI FastAPI Orchestrator Gateway on http://localhost:8000...")
-    print("Interactive Dashboard: http://localhost:8000/")
-    print("Swagger OpenAPI Docs:  http://localhost:8000/docs")
+    print("Launching FlowCast AI FastAPI Orchestrator Gateway...")
+    print("Live Server:           http://148.100.108.248:8000/")
+    print("Swagger OpenAPI Docs:  http://148.100.108.248:8000/docs")
     uvicorn.run("src.api.server:app", host="0.0.0.0", port=8000, reload=True)

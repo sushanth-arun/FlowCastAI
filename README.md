@@ -129,52 +129,43 @@ The user interface delivers a real-time command center:
 
 ---
 
-## 🚀 Quickstart & Local Setup
+## 🚀 IBM LinuxONE Mainframe Deployment & Launch
 
-### 1. Clone the Repository
+FlowCast AI is containerized for **IBM LinuxONE Community Cloud (`s390x`)** and IBM Z enterprise architecture.
+
+### 1. Connect to IBM LinuxONE via SSH
+```bash
+ssh -i KEY01.pem linux1@148.100.108.248
+```
+
+### 2. Clone the Repository
 ```bash
 git clone https://github.com/sushanth-arun/FlowCastAI.git
 cd FlowCastAI
 ```
 
-### 2. Set Up Python Environment
+### 3. Build & Launch with Docker Compose
+The Docker configuration utilizes pre-compiled native `s390x` binaries from Ubuntu 24.04 (zero source compilation needed):
 ```bash
-python -m venv venv
-venv\Scripts\activate      # Windows
-# source venv/bin/activate # Linux/macOS
-
-pip install -r requirements.txt
-```
-
-### 3. Run the Backend Gateway
-```bash
-python -m uvicorn src.api.server:app --host 127.0.0.1 --port 8000 --reload
-```
-* Access the UI at: [http://localhost:8000/](http://localhost:8000/)
-* Access Swagger API docs at: [http://localhost:8000/docs](http://localhost:8000/docs)
-
-### 4. (Optional) Run Frontend in Vite Development Mode
-```bash
-cd frontend
-npm install
-npm run dev
-```
-* Access Vite dev server at: [http://localhost:5173/](http://localhost:5173/)
-
----
-
-## 🐳 Docker & IBM LinuxONE Deployment
-
-FlowCast AI features a multi-architecture Docker build using pre-compiled native `s390x` binaries (zero source compilation needed):
-
-```bash
-# Build and launch container in detached mode
 docker compose up -d --build
-
-# Verify container status
-docker ps
-curl http://localhost:8000/healthz
 ```
+
+### 4. Verify Mainframe Service Health
+```bash
+# Verify container is running and healthy
+docker ps
+
+# Check startup logs
+docker logs flowcast-ai-service
+
+# Query health status
+curl http://148.100.108.248:8000/healthz
+```
+
+### 5. Access the Live Deployment
+* **Web UI Dashboard**: [http://148.100.108.248:8000/](http://148.100.108.248:8000/)
+* **Interactive OpenAPI (Swagger) Docs**: [http://148.100.108.248:8000/docs](http://148.100.108.248:8000/docs)
+* **Health Check Endpoint**: [http://148.100.108.248:8000/healthz](http://148.100.108.248:8000/healthz)
 
 ---
 
