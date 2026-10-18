@@ -1199,6 +1199,120 @@ a {
   font-weight: 600;
 }
 
+/* ==========================================================================
+   Dual-View Toggle, In-Table Search & Pagination Controls
+   ========================================================================== */
+
+.view-toggle-wrap {
+  display: inline-flex;
+  align-items: center;
+  background: #F1F5F9;
+  padding: 3px;
+  border-radius: var(--radius-md);
+  border: 1px solid #E2E8F0;
+  gap: 3px;
+}
+
+.view-toggle-btn {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #64748B;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.18s ease;
+}
+
+.view-toggle-btn:hover {
+  color: var(--primary);
+}
+
+.view-toggle-btn.active {
+  background: #FFFFFF;
+  color: var(--text-navy);
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.table-search-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 260px;
+  max-width: 360px;
+  flex: 1;
+}
+
+.table-search-input {
+  width: 100%;
+  height: 34px;
+  padding: 0 30px 0 32px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: #FFFFFF;
+  font-size: 0.78rem;
+  color: var(--text-navy);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.table-search-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 111, 245, 0.12);
+}
+
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-top: 1px solid #EDF2F7;
+  background: #FAFCFE;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  font-size: 0.78rem;
+  color: #64748B;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination-btn {
+  padding: 5px 12px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+  background: #FFFFFF;
+  color: var(--text-navy);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: #F8FAFD;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: #F1F5F9;
+}
+
 /* Responsive Breakpoints */
 @media (max-width: 1200px) {
   .kpi-grid { grid-template-columns: repeat(2, 1fr); }

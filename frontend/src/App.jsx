@@ -18,6 +18,7 @@ import {
   checkBackendHealth,
   getOverviewKPIs,
   getShipments,
+  getAllShipments,
   getWarehouses,
   runScenarioSimulation
 } from './services/api';
@@ -31,6 +32,7 @@ export default function App() {
   // Core Data State
   const [kpis, setKpis] = useState({});
   const [shipments, setShipments] = useState([]);
+  const [allShipments, setAllShipments] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [optimizationResult, setOptimizationResult] = useState(null);
   const [isSimulating, setIsSimulating] = useState(false);
@@ -39,10 +41,11 @@ export default function App() {
   // Initial load
   useEffect(() => {
     async function initData() {
-      const [liveStatus, loadedKpis, loadedShipments, loadedWarehouses, initialOpt] = await Promise.all([
+      const [liveStatus, loadedKpis, loadedShipments, loadedAllShipments, loadedWarehouses, initialOpt] = await Promise.all([
         checkBackendHealth(),
         getOverviewKPIs(),
         getShipments(),
+        getAllShipments(),
         getWarehouses(),
         runScenarioSimulation()
       ]);
@@ -50,6 +53,7 @@ export default function App() {
       setIsBackendLive(liveStatus);
       setKpis(loadedKpis);
       setShipments(loadedShipments);
+      setAllShipments(loadedAllShipments);
       setWarehouses(loadedWarehouses);
       setOptimizationResult(initialOpt);
     }
@@ -151,6 +155,7 @@ export default function App() {
           {activeTab === 'shipments' && (
             <ShipmentsView
               shipments={shipments}
+              allShipments={allShipments}
               selectedShipmentId={selectedShipmentId}
               onSelectShipment={handleSelectShipment}
               searchQuery={searchQuery}

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import ShipmentTable from '../ShipmentTable';
 import ShipmentDetailModal from '../ShipmentDetailModal';
-import { Truck, Server, Radio } from 'lucide-react';
+import { Truck, Server, Radio, ShieldCheck } from 'lucide-react';
 
 export default function ShipmentsView({
   shipments,
+  allShipments = [],
   selectedShipmentId,
   onSelectShipment,
   searchQuery,
@@ -12,8 +13,9 @@ export default function ShipmentsView({
 }) {
   const [modalShipment, setModalShipment] = useState(null);
 
-  const delayedCount = shipments.filter(s => s.riskLevel?.toUpperCase() === 'HIGH').length;
-  const onTimeCount = shipments.length - delayedCount;
+  const fullFleet = allShipments.length > 0 ? allShipments : shipments;
+  const delayedCount = fullFleet.filter(s => s.riskLevel?.toUpperCase() === 'HIGH').length;
+  const onTimeCount = fullFleet.length - delayedCount;
 
   return (
     <div>
@@ -53,9 +55,10 @@ export default function ShipmentsView({
           </div>
 
           <div style={{ fontSize: '0.78rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: 16 }}>
-            <span>Total Tracked: <strong style={{ color: '#1E293B' }}>{shipments.length} Routes</strong></span>
+            <span>Total Fleet: <strong style={{ color: '#1E293B' }}>{fullFleet.length} Active</strong></span>
+            <span>Priority Monitored: <strong style={{ color: '#2563EB' }}>{shipments.length} Routes</strong></span>
             <span>Critical Delays: <strong style={{ color: '#EF4444' }}>{delayedCount}</strong></span>
-            <span>On Schedule: <strong style={{ color: '#10B981' }}>{onTimeCount}</strong></span>
+            <span>Fleet On-Time: <strong style={{ color: '#10B981' }}>{((onTimeCount / fullFleet.length) * 100).toFixed(1)}%</strong></span>
           </div>
         </div>
 
@@ -77,9 +80,10 @@ export default function ShipmentsView({
         </div>
       </div>
 
-      {/* Shipment Table */}
+      {/* Shipment Table with Dual-View Toggle & In-Table Search */}
       <ShipmentTable
-        shipments={shipments}
+        priorityShipments={shipments}
+        allShipments={fullFleet}
         selectedShipmentId={selectedShipmentId}
         onSelectShipment={onSelectShipment}
         onAnalyzeShipment={(shp) => {

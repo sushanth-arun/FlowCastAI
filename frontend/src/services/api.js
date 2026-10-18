@@ -9,6 +9,7 @@
 import {
   INITIAL_KPIS,
   INITIAL_SHIPMENTS,
+  ALL_NETWORK_SHIPMENTS,
   INITIAL_WAREHOUSES,
   calculateOptimization
 } from './mockData';
@@ -85,6 +86,13 @@ export async function getShipments() {
     }
   }
   return [...INITIAL_SHIPMENTS];
+}
+
+/**
+ * Fetch all 148 network shipments across national supply chain fleet
+ */
+export async function getAllShipments() {
+  return [...ALL_NETWORK_SHIPMENTS];
 }
 
 /**

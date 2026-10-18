@@ -137,6 +137,79 @@ export const INITIAL_SHIPMENTS = [
   }
 ];
 
+function generateAllNetworkShipments() {
+  const result = [...INITIAL_SHIPMENTS];
+
+  const hubs = [
+    { id: 'WH-A', name: 'Warehouse A (Chennai Hub)' },
+    { id: 'WH-B', name: 'Warehouse B (Bengaluru Hub)' },
+    { id: 'WH-C', name: 'Warehouse C (Hyderabad Hub)' },
+    { id: 'WH-MUM', name: 'Warehouse D (Mumbai Hub)' },
+    { id: 'WH-DEL', name: 'Warehouse E (Delhi-NCR Hub)' },
+    { id: 'WH-PUN', name: 'Warehouse F (Pune Hub)' }
+  ];
+
+  const origins = [
+    'Sri City Industrial Hub', 'Hosur Manufacturing Corridor', 'Port of Chennai',
+    'JNPT Port Navi Mumbai', 'Shamshabad Air Cargo Terminal', 'Manesar Auto Belt',
+    'Sanand Industrial Park', 'Oragadam Auto Hub', 'Peenya Industrial Estate',
+    'Noida Electronics Cluster', 'Pimpri-Chinchwad Logistics Gateway', 'Kolkata Dock System'
+  ];
+
+  const products = [
+    { sku: 'PRD-101', name: 'IoT Telemetry Sensor Nodes' },
+    { sku: 'PRD-102', name: 'Smart Cardio Monitor Units' },
+    { sku: 'PRD-103', name: 'Industrial Edge Microcontrollers' },
+    { sku: 'PRD-104', name: 'Power Inverter Gateways' },
+    { sku: 'PRD-105', name: 'Precision Stepper Controllers' },
+    { sku: 'PRD-106', name: 'Automotive ECU Subsystems' }
+  ];
+
+  const modes = ['Intermodal Freight', 'Dedicated Truckload', 'Air Express', 'Standard Freight'];
+
+  for (let i = 5; i <= 148; i++) {
+    const hub = hubs[(i * 3 + 1) % hubs.length];
+    const prod = products[(i * 5 + 2) % products.length];
+    const origin = origins[(i * 7 + 3) % origins.length];
+    const mode = modes[(i * 2 + 1) % modes.length];
+    const qty = 40 + ((i * 17) % 21) * 10;
+
+    const isMedium = i === 18 || i === 54 || i === 102;
+    const delayDays = isMedium ? Number((1.2 + ((i % 4) * 0.2)).toFixed(1)) : 0.3;
+    const delayProb = isMedium ? 0.45 : Number((0.10 + ((i % 12) * 0.01)).toFixed(2));
+    const riskLevel = isMedium ? 'Medium' : 'Low';
+    const status = isMedium ? 'Customs Inspection Hold' : 'On Schedule';
+    const arrival = isMedium ? `Delayed (+${delayDays}d)` : `Tomorrow, ${String(8 + (i % 12)).padStart(2, '0')}:00`;
+
+    const prefix = hub.id.replace('WH-', '');
+    const num = String(i).padStart(3, '0');
+    const id = `SHP-${prefix}-${num}`;
+
+    result.push({
+      id,
+      sku: prod.sku,
+      productName: prod.name,
+      destinationWarehouseId: hub.id,
+      destinationName: hub.name,
+      origin,
+      quantity: qty,
+      scheduledArrival: arrival,
+      predictedDelayDays: delayDays,
+      delayProbability: delayProb,
+      riskLevel,
+      riskBadgeColor: isMedium ? 'amber' : 'green',
+      status,
+      isFocalScenario: false,
+      transportMode: mode,
+      estimatedCarrierSlaPenalty: isMedium ? '$800 Delay Surcharge' : 'SLA Target Met'
+    });
+  }
+
+  return result;
+}
+
+export const ALL_NETWORK_SHIPMENTS = generateAllNetworkShipments();
+
 export const INITIAL_KPIS = {
   totalShipments: 148,
   activeInTransit: 34,
